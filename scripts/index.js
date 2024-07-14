@@ -29,11 +29,10 @@ function createCard(picture, cityName) {
 
   const deleteButton = cardElement.querySelector(".card__delete-button");
   deleteButton.addEventListener("click", function (event) {
-    oldPositions = savePositions(placesList);
     deleteCard(event);
-    newPositions = getNewPositions(cardElement, placesList);
-    deleteCardAnimation(placesList, oldPositions, newPositions, cardElement);
   });
+
+  return cardElement; 
 }
 
 // @todo: Функция удаления карточки
@@ -44,11 +43,11 @@ function deleteCard(event) {
 
 // @todo: Вывести карточки на страницу
 function createPlacesList(initialCards) {
-  for (let i = 0; i < initialCards.length; i++) {
-    picture = initialCards[i].link;
-    cityName = initialCards[i].name;
-    createCard(picture, cityName);
-  }
+  initialCards.forEach(function (item) {  
+    picture = item.link;
+    cityName = item.name;
+    cardElement = createCard(picture, cityName);
+  });
 }
 
 createPlacesList(initialCards);
