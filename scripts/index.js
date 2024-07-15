@@ -19,7 +19,7 @@ const placesList = content.querySelector(".places__list");
 
 // @todo: Функция создания карточки
 function createCard(initialCard) {
-  cardElement = getCardTemplate();
+  const cardElement = getCardTemplate();
 
 
   //кладём контент в шаблон
@@ -31,8 +31,7 @@ function createCard(initialCard) {
 
   const deleteButton = cardElement.querySelector(".card__delete-button");
   deleteButton.addEventListener("click", function (event) {
-    const cardToDelete = event.target.closest(".places__item");
-    deleteCard(cardToDelete);
+    deleteCard(cardElement);
   });
 
   return cardElement; 
