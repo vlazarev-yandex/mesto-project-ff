@@ -1,2 +1,1 @@
-# Проектная работа Mesto
-
+# Mesto_webpack
