@@ -2,13 +2,23 @@ import './styles/index.css';
 import './components/initialCardsArr.js'; 
 import './components/cards.js'; 
 
-import { openModal, closeModal, allCloseModalEvents } from "./components/modal.js";
-import { createCard, createPlacesList } from './components/cards.js';
+import { openModal, closeModal } from "./components/modal.js";
+import { createCard } from './components/cards.js';
 import { initialCards } from './components/initialCardsArr.js';
 
 /* глобальные переменные */
 const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
+
+
+// @todo: Вывести карточки на страницу
+function createPlacesList(initialCards) {
+  initialCards.forEach(function (item) {  
+
+    const cardElement = createCard(item);
+    placesList.append(cardElement);
+  });
+}
 
 /* создаём первичный список карточек */
 createPlacesList(initialCards);
@@ -28,19 +38,22 @@ const titleInput = editProfileForm.elements['profile__title']
 const descriptionInput = editProfileForm.elements['profile__description']
 
 profileEditButton.addEventListener("click", (event) => {
-    openModal(popupTypeEdit);
-    allCloseModalEvents(popupTypeEdit, popupTypeEdit_closeButton, "Escape"); 
+    openModal(popupTypeEdit); 
 
     titleInput.value = profileTitle.textContent; 
     descriptionInput.value = profileDescription.textContent; 
-
-    editProfileForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        closeModal(popupTypeEdit); 
-        profileTitle.textContent = titleInput.value; 
-        profileDescription.textContent = descriptionInput.value; 
-    }); 
 }); 
+
+editProfileForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  closeModal(popupTypeEdit); 
+  profileTitle.textContent = titleInput.value; 
+  profileDescription.textContent = descriptionInput.value; 
+}); 
+
+popupTypeEdit_closeButton.addEventListener("click", (event) => {
+  closeModal(popupTypeEdit);
+});
 
 /* управляем поп-апом по созданию новой карточки */
 const addButton = content.querySelector(".profile__add-button");
@@ -53,33 +66,45 @@ const newCardForm = document.forms["new-place"];
 const placeNameInput = newCardForm.elements["place-name"];
 const linkInput = newCardForm.elements["link"];
 
-let newCard = {
+/* исправлено */
+/* комметарий: 
+Если переменная объявлена через let, её значение должно быть напрямую перезаписано. В данном случае следует применять объявление через const. */
+const newCard = {
       name: '', 
       link: ''
     }; 
 
 addButton.addEventListener("click", (event) => {
   openModal(popupTypeNewCard);
-  allCloseModalEvents(popupTypeNewCard, popupTypeNewCard_closeButton, "Escape");
-
-  newCardForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    newCard.name = placeNameInput.value; 
-    newCard.link = linkInput.value; 
-
-    console.log(newCard); 
-
-    const cardElement = createCard(newCard); 
-
-    console.log(cardElement); 
-    placesList.prepend(cardElement); 
-
-    closeModal(popupTypeNewCard);
-
-    placeNameInput.value = ''; 
-    linkInput.value = ''; 
-  });
 });
 
-/* поп-ап картинки реализован на card.js:40 */
+popupTypeNewCard_closeButton.addEventListener("click", (event) => {
+  closeModal(popupTypeNewCard);
+});
+
+
+newCardForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  newCard.name = placeNameInput.value; 
+  newCard.link = linkInput.value; 
+
+  console.log(newCard); 
+
+  const cardElement = createCard(newCard); 
+
+  console.log(cardElement); 
+  placesList.prepend(cardElement); 
+
+  closeModal(popupTypeNewCard);
+
+  newCardForm.reset(); 
+});
+
+placesList.addEventListener('click', function(event) {
+  
+  if (event.target.classList.contains('card__image')) {
+    console.log(event.currentTarget); 
+  }
+
+})

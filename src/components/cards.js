@@ -1,8 +1,7 @@
 import {initialCards} from './initialCardsArr.js'
 import {
   openModal, 
-  closeModal, 
-  allCloseModalEvents 
+  closeModal 
 } from "./modal.js";
 
 // @todo: Темплейт карточки
@@ -19,6 +18,7 @@ export function likeFunction(event) {
 // глобальные элементы
 const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
+const popupImage = document.querySelector(".popup_type_image");
 
 // @todo: Функция создания карточки
 export function createCard(initialCard) {
@@ -37,20 +37,18 @@ export function createCard(initialCard) {
     deleteCard(cardElement);
   });
 
-  cardImage.addEventListener('click', (event) => {
+  // cardImage.addEventListener('click', (event) => {
     
-    const popupImage = document.querySelector(".popup_type_image");
-    const popupImage_closeButton = popupImage.querySelector(".popup__close");
-    const popupImage_img = popupImage.querySelector(".popup__image");
-    const popupImage_caption = popupImage.querySelector(".popup__caption");
+  //   const buttonCloseImagePopup = popupImage.querySelector(".popup__close");
+  //   const imagePopupImage = popupImage.querySelector(".popup__image");
+  //   const captionPopupImage = popupImage.querySelector(".popup__caption");
 
-    popupImage_img.src = cardImage.src; 
-    popupImage_img.alt = cardImage.alt; 
-    popupImage_caption.textContent = cardImage.alt; 
+  //   imagePopupImage.src = cardImage.src; 
+  //   imagePopupImage.alt = cardImage.alt; 
+  //   captionPopupImage.textContent = cardImage.alt; 
 
-    openModal(popupImage); 
-    allCloseModalEvents(popupImage, popupImage_closeButton, "Escape"); 
-  })
+  //   openModal(popupImage); 
+  // })
 
   const likeButton = cardElement.querySelector('.card__like-button'); 
   likeButton.addEventListener('click', likeFunction); 
@@ -61,13 +59,4 @@ export function createCard(initialCard) {
 // @todo: Функция удаления карточки
 export function deleteCard(cardToDelete) {
   cardToDelete.remove();
-}
-
-// @todo: Вывести карточки на страницу
-export function createPlacesList(initialCards) {
-  initialCards.forEach(function (item) {  
-
-    const cardElement = createCard(item);
-    placesList.append(cardElement);
-  });
 }
