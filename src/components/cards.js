@@ -1,9 +1,3 @@
-import {initialCards} from './initialCardsArr.js'
-import {
-  openModal, 
-  closeModal 
-} from "./modal.js";
-
 // @todo: Темплейт карточки
 function getCardTemplate() {
   const cardTemplate = document.querySelector("#card-template").content;
@@ -21,7 +15,7 @@ const placesList = content.querySelector(".places__list");
 const popupImage = document.querySelector(".popup_type_image");
 
 // @todo: Функция создания карточки
-export function createCard(initialCard) {
+export function createCard(initialCard, likeFunction, deleteCard, imagePopupCallback) {
   const cardElement = getCardTemplate();
 
 
@@ -37,18 +31,9 @@ export function createCard(initialCard) {
     deleteCard(cardElement);
   });
 
-  // cardImage.addEventListener('click', (event) => {
-    
-  //   const buttonCloseImagePopup = popupImage.querySelector(".popup__close");
-  //   const imagePopupImage = popupImage.querySelector(".popup__image");
-  //   const captionPopupImage = popupImage.querySelector(".popup__caption");
-
-  //   imagePopupImage.src = cardImage.src; 
-  //   imagePopupImage.alt = cardImage.alt; 
-  //   captionPopupImage.textContent = cardImage.alt; 
-
-  //   openModal(popupImage); 
-  // })
+  cardImage.addEventListener('click', (event) => {
+    imagePopupCallback(popupImage, cardImage); 
+  })
 
   const likeButton = cardElement.querySelector('.card__like-button'); 
   likeButton.addEventListener('click', likeFunction); 
