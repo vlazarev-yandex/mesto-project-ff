@@ -12,7 +12,6 @@ export function likeFunction(event) {
 // глобальные элементы
 const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
-const popupImage = document.querySelector(".popup_type_image");
 
 // @todo: Функция создания карточки
 export function createCard(initialCard, likeFunction, deleteCard, imagePopupCallback) {
@@ -32,7 +31,7 @@ export function createCard(initialCard, likeFunction, deleteCard, imagePopupCall
   });
 
   cardImage.addEventListener('click', (event) => {
-    imagePopupCallback(popupImage, cardImage); 
+    imagePopupCallback(cardImage); 
   })
 
   const likeButton = cardElement.querySelector('.card__like-button'); 

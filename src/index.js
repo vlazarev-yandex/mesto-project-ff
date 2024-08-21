@@ -6,22 +6,6 @@ import { openModal, closeModal } from "./components/modal.js";
 import { createCard, deleteCard, likeFunction } from "./components/cards.js";
 import { initialCards } from "./components/initialCardsArr.js";
 
-export function imagePopupCallback(popupImage, cardImage) {
-  const imagePopupImage = popupImage.querySelector(".popup__image");
-  const captionPopupImage = popupImage.querySelector(".popup__caption");
-
-  imagePopupImage.src = cardImage.src;
-  imagePopupImage.alt = cardImage.alt;
-  captionPopupImage.textContent = cardImage.alt;
-
-  openModal(popupImage);
-
-  const popupImage_closeButton = popupImage.querySelector(".popup__close");
-  popupImage_closeButton.addEventListener('click', (event) => {
-    closeModal(popupImage);
-  }); 
-}
-
 /* глобальные переменные */
 const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
@@ -60,14 +44,15 @@ profileEditButton.addEventListener("click", (event) => {
 
 editProfileForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  closeModal(popupTypeEdit);
+
   profileTitle.textContent = titleInput.value;
   profileDescription.textContent = descriptionInput.value;
+
+  closeModal(event);
+  console.log(event.currentTarget.parentElement.parentElement); 
 });
 
-popupTypeEdit_closeButton.addEventListener("click", (event) => {
-  closeModal(popupTypeEdit);
-});
+popupTypeEdit_closeButton.addEventListener("click", closeModal); 
 
 /* управляем поп-апом по созданию новой карточки */
 const addButton = content.querySelector(".profile__add-button");
@@ -89,9 +74,7 @@ addButton.addEventListener("click", (event) => {
   openModal(popupTypeNewCard);
 });
 
-popupTypeNewCard_closeButton.addEventListener("click", (event) => {
-  closeModal(popupTypeNewCard);
-});
+popupTypeNewCard_closeButton.addEventListener("click", closeModal); 
 
 newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -102,7 +85,25 @@ newCardForm.addEventListener("submit", (event) => {
   const cardElement = createCard(newCard, likeFunction, deleteCard, imagePopupCallback);
   placesList.prepend(cardElement);
 
-  closeModal(popupTypeNewCard);
+  closeModal(event);
 
   newCardForm.reset();
 });
+
+/* открываем поп-ап с картинкой */
+
+const popupImage = document.querySelector(".popup_type_image");
+const buttonCloseImagePopup = popupImage.querySelector(".popup__close");
+
+export function imagePopupCallback(cardImage) {
+  const imagePopupImage = popupImage.querySelector(".popup__image");
+  const captionPopupImage = popupImage.querySelector(".popup__caption");
+
+  imagePopupImage.src = cardImage.src;
+  imagePopupImage.alt = cardImage.alt;
+  captionPopupImage.textContent = cardImage.alt;
+
+  openModal(popupImage);
+}
+
+buttonCloseImagePopup.addEventListener('click', closeModal); 
