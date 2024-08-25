@@ -48,11 +48,12 @@ editProfileForm.addEventListener("submit", (event) => {
   profileTitle.textContent = titleInput.value;
   profileDescription.textContent = descriptionInput.value;
 
-  closeModal(event);
-  console.log(event.currentTarget.parentElement.parentElement); 
+  closeModal(popupTypeEdit);
 });
 
-popupTypeEdit_closeButton.addEventListener("click", closeModal); 
+popupTypeEdit_closeButton.addEventListener("click", (event) => {
+  closeModal(popupTypeEdit); 
+}); 
 
 /* управляем поп-апом по созданию новой карточки */
 const addButton = content.querySelector(".profile__add-button");
@@ -74,7 +75,9 @@ addButton.addEventListener("click", (event) => {
   openModal(popupTypeNewCard);
 });
 
-popupTypeNewCard_closeButton.addEventListener("click", closeModal); 
+popupTypeNewCard_closeButton.addEventListener("click", (event) => {
+  closeModal(popupTypeNewCard); 
+}); 
 
 newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -85,7 +88,7 @@ newCardForm.addEventListener("submit", (event) => {
   const cardElement = createCard(newCard, likeFunction, deleteCard, imagePopupCallback);
   placesList.prepend(cardElement);
 
-  closeModal(event);
+  closeModal(popupTypeNewCard); 
 
   newCardForm.reset();
 });
@@ -106,4 +109,6 @@ export function imagePopupCallback(cardImage) {
   openModal(popupImage);
 }
 
-buttonCloseImagePopup.addEventListener('click', closeModal); 
+buttonCloseImagePopup.addEventListener('click', (event) => {
+  closeModal(popupImage)
+}); 
