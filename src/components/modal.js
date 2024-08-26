@@ -1,3 +1,4 @@
+import { clearInputErrors } from "./validation";
 function overlayCloseModal(event) {
   if (event.currentTarget === event.target) {
     const popup = document.querySelector(".popup_is-opened");
@@ -16,6 +17,10 @@ export function closeModal(popup) {
   
   window.removeEventListener("keyup", escCloseModal);
   popup.removeEventListener("click", overlayCloseModal);
+  
+  if (popup.querySelector(".popup__form") != null) {
+    clearInputErrors(popup); 
+  }
 }
 
 export function openModal(popup) {

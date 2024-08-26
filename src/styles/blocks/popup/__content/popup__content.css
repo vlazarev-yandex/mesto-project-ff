@@ -2,7 +2,8 @@
   /* display: none; */
   max-width: 430px;
   width: 100%;
-  min-height: 330px;
+  /* min-height: 330px; */
+  min-height: 270px; /* поправил под новый поп-ап редактирования картинки профиля */
   background-color: #fff;
   border-radius: 10px;
   position: relative;

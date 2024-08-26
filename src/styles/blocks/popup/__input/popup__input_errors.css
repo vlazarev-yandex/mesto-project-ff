@@ -1,0 +1,26 @@
+.popup__input_error {
+  border-bottom: red solid 1px !important;
+}
+
+.popup__input_error-message {
+  min-height: 14px;
+  color: #ff0000;
+  font-size: 12px;
+  margin-bottom: 10px;
+
+  opacity: 1;
+  
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.popup__input_error-message:last-of-type {
+  margin-bottom: 0;
+}
+
+.popup__input_transparent_text {
+  opacity: 0;
+}

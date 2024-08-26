@@ -23,7 +23,7 @@
         <section class="profile page__section">
           <div
             class="profile__image"
-            style="background-image: url(<%=require('./styles/images/avatar.jpg')%>)"
+            style="background-image: url('<%=require('./styles/images/avatar.jpg')%>')"
           ></div>
           <div class="profile__info">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
@@ -31,7 +31,7 @@
             <p class="profile__description">Исследователь океана</p>
           </div>
           <button
-            class="profile__add-button errorMessage"
+            class="profile__add-button"
             type="button"
           ></button>
         </section>
@@ -47,21 +47,38 @@
         <div class="popup__content">
           <button type="button" class="popup__close"></button>
           <h3 class="popup__title">Редактировать профиль</h3>
-          <form class="popup__form" name="edit-profile">
+          <form 
+            class="popup__form" 
+            name="edit-profile" 
+            novalidate>
             <input
               type="text"
               name="profile__title"
+              id="profile__title-input"
               class="popup__input popup__input_type_name"
               placeholder="Имя"
               required
-            />
+              minlength="2"
+              maxlength="40"
+              pattern="/^[А-ЯA-ZёЁ\h-]+$/umi"
+              >
+              <div class="popup__input_error-message">
+                <span class="profile__title-input-error"></span>
+              </div>
             <input
               type="text"
               name="profile__description"
+              id="profile__description-input"
               class="popup__input popup__input_type_description"
               placeholder="Занятие"
               required
-            />
+              minlength="2"
+              maxlength="40"
+              pattern="/^[А-ЯA-ZёЁ\h-]+$/umi"
+              >
+              <div class="popup__input_error-message">
+                <span class="profile__description-input-error"></span>
+              </div>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>
@@ -77,17 +94,48 @@
             <input
               type="text"
               name="place-name"
+              id="place-name-input"
               class="popup__input popup__input_type_card-name"
               placeholder="Название"
               required
             />
+            <div class="popup__input_error-message">
+              <span class="place-name-input-error"></span>
+            </div>
             <input
               type="url"
               name="link"
+              id="link-input"
               class="popup__input popup__input_type_url"
               placeholder="Ссылка на картинку"
               required
             />
+            <div class="popup__input_error-message">
+              <span class="link-input-error"></span>
+            </div>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="popup popup_type_profile-image-edit">
+        <div class="popup__content">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Обновить аватар</h3>
+          <form class="popup__form" name="edit-profile-image">
+            <input
+              type="url"
+              name="link-to-image"
+              id="link-to-image-input"
+              class="popup__input popup__input_type_url"
+              placeholder="Ссылка на картинку"
+              required
+            />
+            <div class="popup__input_error-message">
+              <span class="link-to-image-input-error"></span>
+            </div>
             <button type="submit" class="button popup__button">
               Сохранить
             </button>

@@ -5,6 +5,8 @@ import "./components/cards.js";
 import { openModal, closeModal } from "./components/modal.js";
 import { createCard, deleteCard, likeFunction } from "./components/cards.js";
 import { initialCards } from "./components/initialCardsArr.js";
+import { makeURL, removeURL } from "./components/urlValidation.js";
+import { clearInputErrors, enableValidation } from "./components/validation.js";
 
 /* глобальные переменные */
 const content = document.querySelector(".content");
@@ -13,7 +15,12 @@ const placesList = content.querySelector(".places__list");
 // @todo: Вывести карточки на страницу
 function createPlacesList(initialCards) {
   initialCards.forEach(function (item) {
-    const cardElement = createCard(item, likeFunction, deleteCard, imagePopupCallback);
+    const cardElement = createCard(
+      item,
+      likeFunction,
+      deleteCard,
+      imagePopupCallback
+    );
     placesList.append(cardElement);
   });
 }
@@ -35,6 +42,10 @@ const editProfileForm = document.forms["edit-profile"];
 const titleInput = editProfileForm.elements["profile__title"];
 const descriptionInput = editProfileForm.elements["profile__description"];
 
+/* добавил первичный стейт, чтобы при открытии поп-апа кнопка сразу была активной */
+titleInput.value = profileTitle.textContent;
+descriptionInput.value = profileDescription.textContent;
+
 profileEditButton.addEventListener("click", (event) => {
   openModal(popupTypeEdit);
 
@@ -52,8 +63,8 @@ editProfileForm.addEventListener("submit", (event) => {
 });
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
-  closeModal(popupTypeEdit); 
-}); 
+  closeModal(popupTypeEdit);
+});
 
 /* управляем поп-апом по созданию новой карточки */
 const addButton = content.querySelector(".profile__add-button");
@@ -76,8 +87,8 @@ addButton.addEventListener("click", (event) => {
 });
 
 popupTypeNewCard_closeButton.addEventListener("click", (event) => {
-  closeModal(popupTypeNewCard); 
-}); 
+  closeModal(popupTypeNewCard);
+});
 
 newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -85,11 +96,15 @@ newCardForm.addEventListener("submit", (event) => {
   newCard.name = placeNameInput.value;
   newCard.link = linkInput.value;
 
-  const cardElement = createCard(newCard, likeFunction, deleteCard, imagePopupCallback);
+  const cardElement = createCard(
+    newCard,
+    likeFunction,
+    deleteCard,
+    imagePopupCallback
+  );
   placesList.prepend(cardElement);
 
-  closeModal(popupTypeNewCard); 
-
+  closeModal(popupTypeNewCard);
   newCardForm.reset();
 });
 
@@ -109,6 +124,34 @@ export function imagePopupCallback(cardImage) {
   openModal(popupImage);
 }
 
-buttonCloseImagePopup.addEventListener('click', (event) => {
-  closeModal(popupImage)
-}); 
+buttonCloseImagePopup.addEventListener("click", (event) => {
+  closeModal(popupImage);
+});
+
+/* открываем поп-ап с изменением аватара профиля */
+const profileImage = document.querySelector(".profile__image");
+const popupEditProfileImage = document.querySelector(
+  ".popup_type_profile-image-edit"
+);
+const buttonCloseEditProfileImagePopup =
+  popupEditProfileImage.querySelector(".popup__close");
+const editProfileImageForm = document.forms["edit-profile-image"];
+const linkProfileImageInput = editProfileImageForm.elements["link-to-image"];
+
+profileImage.addEventListener("click", (event) => {
+  openModal(popupEditProfileImage);
+  linkProfileImageInput.value = removeURL(profileImage.style.backgroundImage);
+});
+
+buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
+  closeModal(popupEditProfileImage);
+});
+
+editProfileImageForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
+  closeModal(popupEditProfileImage);
+});
+
+/* валидация форм */
+enableValidation(); 
