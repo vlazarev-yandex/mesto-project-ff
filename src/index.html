@@ -60,7 +60,8 @@
               required
               minlength="2"
               maxlength="40"
-              pattern="/^[А-ЯA-ZёЁ\h-]+$/umi"
+              pattern="^[а-яА-яa-zA-ZёЁ\s\-]+$"
+              data-pattern-mismatch-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы" 
               >
               <div class="popup__input_error-message">
                 <span class="profile__title-input-error"></span>
@@ -74,7 +75,8 @@
               required
               minlength="2"
               maxlength="40"
-              pattern="/^[А-ЯA-ZёЁ\h-]+$/umi"
+              pattern="^[а-яА-яa-zA-ZёЁ\s\-]+$"
+              data-pattern-mismatch-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы" 
               >
               <div class="popup__input_error-message">
                 <span class="profile__description-input-error"></span>
@@ -97,13 +99,19 @@
               id="place-name-input"
               class="popup__input popup__input_type_card-name"
               placeholder="Название"
+              minlength="2"
+              maxlength="30"
+              pattern="^[а-яА-яa-zA-ZёЁ\s\-]+$"
+              data-pattern-mismatch-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы" 
               required
             />
             <div class="popup__input_error-message">
               <span class="place-name-input-error"></span>
             </div>
+            <!-- было бы круто ослабить требование, чтобы ссылки типа ya.ru тоже проходили -->
+            <!-- потому что type="url" слишком жёсткий -->
             <input
-              type="url"
+              type="url" 
               name="link"
               id="link-input"
               class="popup__input popup__input_type_url"

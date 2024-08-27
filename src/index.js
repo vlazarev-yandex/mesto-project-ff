@@ -6,7 +6,7 @@ import { openModal, closeModal } from "./components/modal.js";
 import { createCard, deleteCard, likeFunction } from "./components/cards.js";
 import { initialCards } from "./components/initialCardsArr.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
-import { clearInputErrors, enableValidation } from "./components/validation.js";
+import { clearValidation, enableValidation } from "./components/validation.js";
 
 /* глобальные переменные */
 const content = document.querySelector(".content");
@@ -153,5 +153,15 @@ editProfileImageForm.addEventListener("submit", (event) => {
   closeModal(popupEditProfileImage);
 });
 
-/* валидация форм */
+// Вынес в глобальную переменную, а не в аргумент, тк кажется, что эти классы — это просто глобальный инпут. Типа «я в своём коде расставил вот такие классы». Тогда проще объявить это в глобальном поле, а не передавать аргументом во множество функций.
+export const classListObject = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error', 
+  //inputErrorClass у меня не используется, реализовал через id. Посмотреть: validation.js: 15, validation.js: 25
+  errorClass: 'popup__error_visible'
+}; 
+
 enableValidation(); 
