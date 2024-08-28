@@ -5,7 +5,6 @@ const setValidityMessage = (input) => {
   
   if (InputValidity.patternMismatch) {
     input.setCustomValidity(input.dataset.patternMismatchErrorMessage);
-    console.log(InputValidity); 
   } else {
     input.setCustomValidity("");
   }
