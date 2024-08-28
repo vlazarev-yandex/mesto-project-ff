@@ -10,6 +10,7 @@ import { updateProfileInfo, updateProfilePhoto } from "./components/updateServer
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
 export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
+export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`; 
 export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
 
 const content = document.querySelector(".content");

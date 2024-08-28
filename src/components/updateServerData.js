@@ -1,5 +1,5 @@
 import { PATCH } from "./api";
-import { profileDataURL } from "..";
+import { profileDataURL, profileAvatarURL } from "..";
 
 export const updateProfileInfo = (profileTitle, profileDescription) => {
   const profileUpdatedInfo = {
@@ -15,5 +15,5 @@ export const updateProfilePhoto = (linkToPhoto) => {
         avatar: linkToPhoto
     }; 
 
-    return PATCH(updatedProfilePhoto, profileDataURL); 
+    return PATCH(updatedProfilePhoto, profileAvatarURL); 
 }
