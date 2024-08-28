@@ -1,17 +1,19 @@
 import "./styles/index.css";
-import "./components/initialCardsArr.js";
-import "./components/cards.js";
 
 import { openModal, closeModal } from "./components/modal.js";
 import { createCard, deleteCard, likeFunction } from "./components/cards.js";
-import { initialCards } from "./components/initialCardsArr.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
-import { apiJS, getProfileInfo } from "./components/api.js";
+import { renderProfile, renderInitialCards } from "./components/renderPageFromServer.js"
+import { updateProfileInfo, updateProfilePhoto } from "./components/updateServerData.js"
 
 /* глобальные переменные */
+export const cohortName = "wff-cohort-21";
+export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
+export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
+
 const content = document.querySelector(".content");
-const placesList = content.querySelector(".places__list");
+export const placesList = content.querySelector(".places__list");
 
 // @todo: Вывести карточки на страницу
 function createPlacesList(initialCards) {
@@ -26,13 +28,10 @@ function createPlacesList(initialCards) {
   });
 }
 
-/* создаём первичный список карточек */
-createPlacesList(initialCards);
-
 /* управляем модальным окном изменения профиля */
 const profileInfo = content.querySelector(".profile__info");
-const profileTitle = profileInfo.querySelector(".profile__title");
-const profileDescription = profileInfo.querySelector(".profile__description");
+export const profileTitle = profileInfo.querySelector(".profile__title");
+export const profileDescription = profileInfo.querySelector(".profile__description");
 
 const profileEditButton = content.querySelector(".profile__edit-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
@@ -60,6 +59,8 @@ editProfileForm.addEventListener("submit", (event) => {
   profileTitle.textContent = titleInput.value;
   profileDescription.textContent = descriptionInput.value;
 
+  updateProfileInfo(titleInput.value, descriptionInput.value); 
+  
   closeModal(popupTypeEdit);
 });
 
@@ -130,10 +131,8 @@ buttonCloseImagePopup.addEventListener("click", (event) => {
 });
 
 /* открываем поп-ап с изменением аватара профиля */
-const profileImage = document.querySelector(".profile__image");
-const popupEditProfileImage = document.querySelector(
-  ".popup_type_profile-image-edit"
-);
+export const profileImage = document.querySelector(".profile__image");
+const popupEditProfileImage = document.querySelector(".popup_type_profile-image-edit");
 const buttonCloseEditProfileImagePopup =
   popupEditProfileImage.querySelector(".popup__close");
 const editProfileImageForm = document.forms["edit-profile-image"];
@@ -151,6 +150,9 @@ buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
 editProfileImageForm.addEventListener("submit", (event) => {
   event.preventDefault();
   profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
+
+  updateProfilePhoto(linkProfileImageInput.value); 
+  
   closeModal(popupEditProfileImage);
 });
 
@@ -166,7 +168,10 @@ export const classListObject = {
 };
 
 /* загружаем профиль на страницу */
-getProfileInfo(); 
+renderProfile(); 
+
+/* создаём первичный список карточек */
+renderInitialCards(); 
 
 /* включаем валидацию */
 enableValidation();
