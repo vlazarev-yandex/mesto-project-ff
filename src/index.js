@@ -4,24 +4,35 @@ import { openModal, closeModal } from "./components/modal.js";
 import { createCard, deleteCard, likeFunction } from "./components/cards.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
-import { renderProfile, renderInitialCards } from "./components/renderPageFromServer.js"
-import { updateProfileInfo, updateProfilePhoto } from "./components/updateServerData.js"
+import {
+  renderProfile,
+  renderInitialCards,
+} from "./components/renderPageFromServer.js";
+import {
+  updateProfileInfo,
+  updateProfilePhoto,
+} from "./components/updateServerData.js";
+import { renderLoading, deleteCardFromServer } from "./components/api.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
 export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
-export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me`
-// /avatar`; 
+export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
 export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
+export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`; 
 
 const content = document.querySelector(".content");
-export const errorPage = document.querySelector(".server-error"); 
+export const errorPage = document.querySelector(".server-error");
+export const errorTitle = errorPage.querySelector(".error-title");
+export const errorMessage = errorPage.querySelector(".error-message");
 export const placesList = content.querySelector(".places__list");
 
 /* управляем модальным окном изменения профиля */
 const profileInfo = content.querySelector(".profile__info");
 export const profileTitle = profileInfo.querySelector(".profile__title");
-export const profileDescription = profileInfo.querySelector(".profile__description");
+export const profileDescription = profileInfo.querySelector(
+  ".profile__description"
+);
 
 const profileEditButton = content.querySelector(".profile__edit-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
@@ -29,12 +40,10 @@ const popupTypeEdit_closeButton = popupTypeEdit.querySelector(".popup__close");
 
 const editProfileForm = document.forms["edit-profile"];
 
-const titleInput = editProfileForm.elements["profile__title"];
-const descriptionInput = editProfileForm.elements["profile__description"];
-
-/* добавил первичный стейт, чтобы при открытии поп-апа кнопка сразу была активной */
-titleInput.value = profileTitle.textContent;
-descriptionInput.value = profileDescription.textContent;
+export const titleInput = editProfileForm.elements["profile__title"];
+export const descriptionInput =
+  editProfileForm.elements["profile__description"];
+const editProfileFormButton = editProfileForm.querySelector("button");
 
 profileEditButton.addEventListener("click", (event) => {
   openModal(popupTypeEdit);
@@ -45,13 +54,16 @@ profileEditButton.addEventListener("click", (event) => {
 
 editProfileForm.addEventListener("submit", (event) => {
   event.preventDefault();
-
+  renderLoading(true, editProfileFormButton);
   profileTitle.textContent = titleInput.value;
   profileDescription.textContent = descriptionInput.value;
 
-  updateProfileInfo(titleInput.value, descriptionInput.value); 
-  
-  closeModal(popupTypeEdit);
+  /* чтобы было наглядно, как переключается кнопка */
+  setTimeout(() => {
+    updateProfileInfo(titleInput.value, descriptionInput.value);
+    closeModal(popupTypeEdit);
+    renderLoading(false, editProfileFormButton);
+  }, 1000);
 });
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
@@ -65,6 +77,7 @@ const popupTypeNewCard_closeButton =
   popupTypeNewCard.querySelector(".popup__close");
 
 const newCardForm = document.forms["new-place"];
+const newCardFormButton = newCardForm.querySelector(".button");
 
 const placeNameInput = newCardForm.elements["place-name"];
 const linkInput = newCardForm.elements["link"];
@@ -84,7 +97,7 @@ popupTypeNewCard_closeButton.addEventListener("click", (event) => {
 
 newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
-
+  renderLoading(true, newCardFormButton);
   newCard.name = placeNameInput.value;
   newCard.link = linkInput.value;
 
@@ -94,14 +107,17 @@ newCardForm.addEventListener("submit", (event) => {
     deleteCard,
     imagePopupCallback
   );
-  placesList.prepend(cardElement);
 
-  closeModal(popupTypeNewCard);
-  newCardForm.reset();
+  /* чтобы было наглядно, как переключается кнопка */
+  setTimeout(() => {
+    renderLoading(false, newCardFormButton);
+    closeModal(popupTypeNewCard);
+    newCardForm.reset();
+    placesList.prepend(cardElement);
+  }, 1000);
 });
 
 /* открываем поп-ап с картинкой */
-
 const popupImage = document.querySelector(".popup_type_image");
 const buttonCloseImagePopup = popupImage.querySelector(".popup__close");
 
@@ -122,11 +138,16 @@ buttonCloseImagePopup.addEventListener("click", (event) => {
 
 /* открываем поп-ап с изменением аватара профиля */
 export const profileImage = document.querySelector(".profile__image");
-const popupEditProfileImage = document.querySelector(".popup_type_profile-image-edit");
+const popupEditProfileImage = document.querySelector(
+  ".popup_type_profile-image-edit"
+);
 const buttonCloseEditProfileImagePopup =
   popupEditProfileImage.querySelector(".popup__close");
 const editProfileImageForm = document.forms["edit-profile-image"];
-const linkProfileImageInput = editProfileImageForm.elements["link-to-image"];
+const editProfileImageFormButton =
+  editProfileImageForm.querySelector(".button");
+export const linkProfileImageInput =
+  editProfileImageForm.elements["link-to-image"];
 
 profileImage.addEventListener("click", (event) => {
   openModal(popupEditProfileImage);
@@ -139,11 +160,15 @@ buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
 
 editProfileImageForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
+  renderLoading(true, editProfileImageFormButton);
 
-  updateProfilePhoto(linkProfileImageInput.value); 
-  
-  closeModal(popupEditProfileImage);
+  /* чтобы было наглядно, как переключается кнопка */
+  setTimeout(() => {
+    renderLoading(false, editProfileImageFormButton);
+    profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
+    updateProfilePhoto(linkProfileImageInput.value);
+    closeModal(popupEditProfileImage);
+  }, 1000);
 });
 
 // Вынес в глобальную переменную, а не в аргумент, тк кажется, что эти классы — это просто глобальный инпут. Типа «я в своём коде расставил вот такие классы». Тогда проще объявить это в глобальном поле, а не передавать аргументом во множество функций.
@@ -157,11 +182,15 @@ export const classListObject = {
   errorClass: "popup__error_visible",
 };
 
-/* загружаем профиль на страницу */
-renderProfile(); 
-
-/* создаём первичный список карточек */
-renderInitialCards(); 
-
 /* включаем валидацию */
 enableValidation();
+
+/* загружаем профиль на страницу */
+renderProfile().then(enableValidation);
+/* ещё раз включаем валидацию, когда данные дошли — так у кнопок будут актуальные состояния */
+
+/* создаём первичный список карточек */
+renderInitialCards();
+
+const cardToRemove = "66d0bd89605fba059b7b8008"; 
+deleteCardFromServer(cardToRemove); 
