@@ -1,3 +1,6 @@
+import { myId } from "..";
+import { deleteCard } from "./api";
+import { renderDeleteButton } from "./renderPageFromServer";
 // @todo: Темплейт карточки
 function getCardTemplate() {
   const cardTemplate = document.querySelector("#card-template").content;
@@ -5,7 +8,7 @@ function getCardTemplate() {
 }
 
 export function likeFunction(event) {
-  event.target.classList.toggle('card__like-button_is-active'); 
+  event.target.classList.toggle("card__like-button_is-active");
 }
 
 // @todo: DOM узлы
@@ -14,33 +17,34 @@ const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
 
 // @todo: Функция создания карточки
-export function createCard(initialCard, likeFunction, deleteCard, imagePopupCallback) {
+export function createCard(
+  cardObject,
+  likeFunction,
+  imagePopupCallback
+) {
   const cardElement = getCardTemplate();
 
-
   //кладём контент в шаблон
-  const cardImage = cardElement.querySelector(".card__image"); 
-  const cardTitle = cardElement.querySelector(".card__title"); 
-  cardImage.src = initialCard.link;
-  cardImage.alt = initialCard.name;
-  cardTitle.textContent = initialCard.name;
+  const cardImage = cardElement.querySelector(".card__image");
+  const cardTitle = cardElement.querySelector(".card__title");
+  cardImage.src = cardObject.link;
+  cardImage.alt = cardObject.name;
+  cardTitle.textContent = cardObject.name;
 
-  const deleteButton = cardElement.querySelector(".card__delete-button");
-  deleteButton.addEventListener("click", (event) => {
-    deleteCard(cardElement);
+  cardElement.dataset.cardId = cardObject._id; 
+  cardElement.dataset.cardOwnerId = cardObject.owner._id; 
+  
+  if (cardElement.dataset.cardOwnerId === myId) {
+    renderDeleteButton(cardElement); 
+    /* слушатель теперь вешаю внутри функции отрисовки кнопки удаления, только для активных кнопок */
+  }
+
+  cardImage.addEventListener("click", (event) => {
+    imagePopupCallback(cardImage);
   });
 
-  cardImage.addEventListener('click', (event) => {
-    imagePopupCallback(cardImage); 
-  })
+  const likeButton = cardElement.querySelector(".card__like-button");
+  likeButton.addEventListener("click", likeFunction);
 
-  const likeButton = cardElement.querySelector('.card__like-button'); 
-  likeButton.addEventListener('click', likeFunction); 
-
-  return cardElement; 
-}
-
-// @todo: Функция удаления карточки
-export function deleteCard(cardToDelete) {
-  cardToDelete.remove();
+  return cardElement;
 }

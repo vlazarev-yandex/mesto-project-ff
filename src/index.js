@@ -1,7 +1,7 @@
 import "./styles/index.css";
 
 import { openModal, closeModal } from "./components/modal.js";
-import { createCard, deleteCard, likeFunction } from "./components/cards.js";
+import { createCard, likeFunction } from "./components/cards.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import {
@@ -12,14 +12,20 @@ import {
   updateProfileInfo,
   updateProfilePhoto,
 } from "./components/updateServerData.js";
-import { renderLoading, deleteCardFromServer } from "./components/api.js";
+import {
+  renderLoading,
+  deleteCard,
+  POST,
+  GET,
+} from "./components/api.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
 export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
+export const myId = "b0a677a5e8188a38bb4f5ba8";
 export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
 export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
-export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`; 
+export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
 
 const content = document.querySelector(".content");
 export const errorPage = document.querySelector(".server-error");
@@ -63,7 +69,7 @@ editProfileForm.addEventListener("submit", (event) => {
     updateProfileInfo(titleInput.value, descriptionInput.value);
     closeModal(popupTypeEdit);
     renderLoading(false, editProfileFormButton);
-  }, 1000);
+  }, 300);
 });
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
@@ -82,10 +88,8 @@ const newCardFormButton = newCardForm.querySelector(".button");
 const placeNameInput = newCardForm.elements["place-name"];
 const linkInput = newCardForm.elements["link"];
 
-const newCard = {
-  name: "",
-  link: "",
-};
+placeNameInput.value = "new card";
+linkInput.value = "https://i.postimg.cc/j5NsqWyG/temp-Image-NGHu-Mi.avif";
 
 addButton.addEventListener("click", (event) => {
   openModal(popupTypeNewCard);
@@ -98,15 +102,27 @@ popupTypeNewCard_closeButton.addEventListener("click", (event) => {
 newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
   renderLoading(true, newCardFormButton);
-  newCard.name = placeNameInput.value;
-  newCard.link = linkInput.value;
+
+  const newCard = {
+    name: placeNameInput.value,
+    link: linkInput.value,
+    _id: "",
+    owner: {
+      _id: myId,
+      about: profileDescription.textContent, 
+      avatar: removeURL(profileImage.style.backgroundImage),
+      cohort: cohortName,
+      name: profileTitle.textContent,
+    },
+  };
 
   const cardElement = createCard(
     newCard,
     likeFunction,
-    deleteCard,
     imagePopupCallback
   );
+
+  POST(newCard, newCardURL);
 
   /* чтобы было наглядно, как переключается кнопка */
   setTimeout(() => {
@@ -114,7 +130,7 @@ newCardForm.addEventListener("submit", (event) => {
     closeModal(popupTypeNewCard);
     newCardForm.reset();
     placesList.prepend(cardElement);
-  }, 1000);
+  }, 300);
 });
 
 /* открываем поп-ап с картинкой */
@@ -168,7 +184,7 @@ editProfileImageForm.addEventListener("submit", (event) => {
     profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
     updateProfilePhoto(linkProfileImageInput.value);
     closeModal(popupEditProfileImage);
-  }, 1000);
+  }, 300);
 });
 
 // Вынес в глобальную переменную, а не в аргумент, тк кажется, что эти классы — это просто глобальный инпут. Типа «я в своём коде расставил вот такие классы». Тогда проще объявить это в глобальном поле, а не передавать аргументом во множество функций.
@@ -191,6 +207,3 @@ renderProfile().then(enableValidation);
 
 /* создаём первичный список карточек */
 renderInitialCards();
-
-const cardToRemove = "66d0bd89605fba059b7b8008"; 
-deleteCardFromServer(cardToRemove); 
