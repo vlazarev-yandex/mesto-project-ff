@@ -17,25 +17,29 @@ const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
 
 // @todo: Функция создания карточки
-export function createCard(
-  cardObject,
-  likeFunction,
-  imagePopupCallback
-) {
+export function createCard(cardObject, likeFunction, imagePopupCallback) {
   const cardElement = getCardTemplate();
 
   //кладём контент в шаблон
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
+  const cardLikes = cardElement.querySelector(".card__likes");
+
   cardImage.src = cardObject.link;
   cardImage.alt = cardObject.name;
   cardTitle.textContent = cardObject.name;
+  cardElement.dataset.cardId = cardObject._id;
+  cardElement.dataset.cardOwnerId = cardObject.owner._id;
 
-  cardElement.dataset.cardId = cardObject._id; 
-  cardElement.dataset.cardOwnerId = cardObject.owner._id; 
-  
+  const likesAmount = cardObject.likes.length;
+  if (likesAmount > 0) {
+    cardLikes.textContent = cardObject.likes.length;
+  } else {
+    cardLikes.classList.add('no-likes'); 
+  }
+
   if (cardElement.dataset.cardOwnerId === myId) {
-    renderDeleteButton(cardElement); 
+    renderDeleteButton(cardElement);
     /* слушатель теперь вешаю внутри функции отрисовки кнопки удаления, только для активных кнопок */
   }
 
