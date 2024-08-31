@@ -75,7 +75,7 @@ export const deleteCard = (cardId) => {
 };
 
 export const POST = (obj, url) => {
-  fetch(url, {
+  return fetch(url, {
     method: "POST",
     headers: {
       authorization: authorizationToken,
@@ -93,6 +93,29 @@ export const POST = (obj, url) => {
     })
     .catch((err) => {
       console.log("Ошибка в запросе POST", obj, url, err);
+      return Promise.reject(`Что-то пошло не так: ${err}`);
+    });
+};
+
+export const PUT = (obj, url) => {
+  return fetch(url, {
+    method: "PUT",
+    headers: {
+      authorization: authorizationToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(obj),
+  })
+    .then((res) => {
+      if (res.ok) {
+        console.log("PUT", obj, url, " — успешно");
+        return res.json();
+      } else {
+        return Promise.reject(`Что-то пошло не так: ${res.status}`);
+      }
+    })
+    .catch((err) => {
+      console.log("Ошибка в запросе PUT", obj, url, err);
       return Promise.reject(`Что-то пошло не так: ${err}`);
     });
 };

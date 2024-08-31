@@ -22,7 +22,8 @@ import {
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
 export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
-export const myId = "b0a677a5e8188a38bb4f5ba8";
+export const myProfile = await GET(profileDataURL); 
+
 export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
 export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
 export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
@@ -103,26 +104,27 @@ newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
   renderLoading(true, newCardFormButton);
 
-  const newCard = {
+  let newCard = {
+    likes: [], 
+    createdAt: "", 
     name: placeNameInput.value,
     link: linkInput.value,
     _id: "",
-    owner: {
-      _id: myId,
-      about: profileDescription.textContent, 
-      avatar: removeURL(profileImage.style.backgroundImage),
-      cohort: cohortName,
-      name: profileTitle.textContent,
-    },
+    owner: myProfile
   };
-
+  
   const cardElement = createCard(
     newCard,
     likeFunction,
     imagePopupCallback
   );
 
-  POST(newCard, newCardURL);
+  POST(newCard, newCardURL)
+  .then((res) => {
+    cardElement.dataset.cardId = res._id; 
+    cardElement.querySelector(".card__like-button").dataset.parentCardId = cardElement.dataset.cardId;
+    cardElement.querySelector(".card__delete-button").dataset.parentCardId = cardElement.dataset.cardId;
+  });      
 
   /* чтобы было наглядно, как переключается кнопка */
   setTimeout(() => {

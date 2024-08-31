@@ -61,3 +61,22 @@ export const renderInitialCards = () => {
     });
   });
 };
+
+export const renderLikes = (cardElement, cardObject) => {
+  const likeButton = cardElement.querySelector(".card__like-button");
+  const cardLikes = cardElement.querySelector(".card__likes");
+  likeButton.dataset.parentCardId = cardElement.dataset.cardId; 
+
+  const likesAmount = cardObject.likes.length;
+  
+  if (likesAmount > 0) {
+    cardLikes.textContent = cardObject.likes.length;
+  } else {
+    cardLikes.classList.add('no-likes'); 
+  }
+
+  // const likesArray = cardObject.likes; 
+  // console.log(likesArray.some((likeInfo) => {
+  //     return !likeInfo._id == myProfile._id; 
+  //   })); 
+}

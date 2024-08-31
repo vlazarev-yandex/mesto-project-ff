@@ -1,6 +1,6 @@
-import { myId } from "..";
-import { deleteCard } from "./api";
-import { renderDeleteButton } from "./renderPageFromServer";
+import { cohortName, myProfile } from "..";
+import { deleteCard, GET, PUT } from "./api";
+import { renderDeleteButton, renderLikes } from "./renderPageFromServer";
 // @todo: Темплейт карточки
 function getCardTemplate() {
   const cardTemplate = document.querySelector("#card-template").content;
@@ -8,7 +8,13 @@ function getCardTemplate() {
 }
 
 export function likeFunction(event) {
-  event.target.classList.toggle("card__like-button_is-active");
+  const likeButton = event.target; 
+  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${likeButton.dataset.parentCardId}`;  
+  likeButton.classList.toggle("card__like-button_is-active");
+  
+  PUT(myProfile, likeURL); 
+    // .then(console.log)
+    // .catch(console.log); 
 }
 
 // @todo: DOM узлы
@@ -31,14 +37,9 @@ export function createCard(cardObject, likeFunction, imagePopupCallback) {
   cardElement.dataset.cardId = cardObject._id;
   cardElement.dataset.cardOwnerId = cardObject.owner._id;
 
-  const likesAmount = cardObject.likes.length;
-  if (likesAmount > 0) {
-    cardLikes.textContent = cardObject.likes.length;
-  } else {
-    cardLikes.classList.add('no-likes'); 
-  }
+  renderLikes(cardElement, cardObject); 
 
-  if (cardElement.dataset.cardOwnerId === myId) {
+  if (cardElement.dataset.cardOwnerId === myProfile._id) {
     renderDeleteButton(cardElement);
     /* слушатель теперь вешаю внутри функции отрисовки кнопки удаления, только для активных кнопок */
   }
