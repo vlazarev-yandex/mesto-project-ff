@@ -1,5 +1,5 @@
 import { cohortName, myProfile } from "..";
-import { deleteCard, GET, PUT } from "./api";
+import { DELETE, deleteCard, GET, PUT } from "./api";
 import { renderDeleteButton, renderLikes } from "./renderPageFromServer";
 // @todo: Темплейт карточки
 function getCardTemplate() {
@@ -7,14 +7,50 @@ function getCardTemplate() {
   return cardTemplate.querySelector(".places__item").cloneNode(true);
 }
 
+const putLike = (button, profile, url) => {
+  const card = document.querySelector(
+    `[data-card-id="${button.dataset.parentCardId}"]`
+  );
+  PUT(profile, url)
+    .then((res) => {
+      console.log("Отправил лайк на сервер успешно", res);
+      button.classList.add("card__like-button_is-active");
+      renderLikes(card, res);
+    })
+    .catch((err) => {
+      console.log("Отправил лайк на сервер, но что-то не так: ", err);
+    });
+};
+
+const removeLike = (button, url) => {
+  const card = document.querySelector(
+    `[data-card-id="${button.dataset.parentCardId}"]`
+  );
+
+  DELETE(url)
+    .then((res) => {
+      console.log("Лайк удалён", res);
+      button.classList.remove("card__like-button_is-active");
+      renderLikes(card, res);
+    })
+    .catch((err) => {
+      console.log("Ошибка при снятии лайка", err, url);
+    });
+};
+
 export function likeFunction(event) {
-  const likeButton = event.target; 
-  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${likeButton.dataset.parentCardId}`;  
-  likeButton.classList.toggle("card__like-button_is-active");
-  
-  PUT(myProfile, likeURL); 
-    // .then(console.log)
-    // .catch(console.log); 
+  const likeButton = event.target;
+  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${likeButton.dataset.parentCardId}`;
+
+  const likeButtonHasMyLike = likeButton.classList.contains(
+    "card__like-button_is-active"
+  );
+
+  if (!likeButtonHasMyLike) {
+    putLike(likeButton, myProfile, likeURL);
+  } else {
+    removeLike(likeButton, likeURL);
+  }
 }
 
 // @todo: DOM узлы
@@ -37,7 +73,7 @@ export function createCard(cardObject, likeFunction, imagePopupCallback) {
   cardElement.dataset.cardId = cardObject._id;
   cardElement.dataset.cardOwnerId = cardObject.owner._id;
 
-  renderLikes(cardElement, cardObject); 
+  renderLikes(cardElement, cardObject);
 
   if (cardElement.dataset.cardOwnerId === myProfile._id) {
     renderDeleteButton(cardElement);
@@ -46,6 +82,7 @@ export function createCard(cardObject, likeFunction, imagePopupCallback) {
 
   cardImage.addEventListener("click", (event) => {
     imagePopupCallback(cardImage);
+
   });
 
   const likeButton = cardElement.querySelector(".card__like-button");

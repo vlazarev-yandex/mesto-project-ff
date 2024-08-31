@@ -13,7 +13,7 @@ import {
   linkProfileImageInput,
   titleInput,
   descriptionInput,
-  myId
+  myProfile,
 } from "..";
 
 /* рисуем профиль по данным с сервера */
@@ -28,33 +28,46 @@ export const renderProfile = () => {
       linkProfileImageInput.value = userData.avatar;
       titleInput.value = userData.name;
       descriptionInput.value = userData.about;
+
+      console.log('Профиль, отрисован', userData); 
     })
     .catch((error) => {
-      console.log(error);
+      console.log('Не удалось отрисовать профиль', error);
     });
 };
 
 /* рисуем список начальных карточек по данным с сервера */
 export const renderDeleteButton = (cardElement) => {
-  const deleteButton = cardElement.querySelector('.card__delete-button'); 
-  deleteButton.classList.add('card__delete-button-active'); 
-  deleteButton.dataset.parentCardId = cardElement.dataset.cardId; 
+  const deleteButton = cardElement.querySelector(".card__delete-button");
+  deleteButton.classList.add("card__delete-button-active");
+  deleteButton.dataset.parentCardId = cardElement.dataset.cardId;
 
   deleteButton.addEventListener("click", (event) => {
-    deleteCard(deleteButton.dataset.parentCardId); 
+    deleteCard(deleteButton.dataset.parentCardId);
   });
 
-  return deleteButton; 
-}
+  return deleteButton;
+};
 
 import { placesList } from "..";
+
+const sortCards = (cardsArray) => {
+  return cardsArray.sort ( function (cardA, cardB) {
+    const likesA = cardA.likes.length; 
+    const likesB = cardB.likes.length; 
+    if (likesA > likesB) return -1; 
+    if (likesA < likesB) return 1; 
+    return 0; 
+  })
+}
+
 export const renderInitialCards = () => {
   GET(initialCardsURL).then((initialCards) => {
-    initialCards.forEach(function (item) {
+    const sortedInitialCards = sortCards(initialCards); 
+    sortedInitialCards.forEach(function (item) {
       const cardElement = createCard(
         item,
         likeFunction,
-        deleteCard,
         imagePopupCallback
       );
       placesList.append(cardElement);
@@ -65,18 +78,24 @@ export const renderInitialCards = () => {
 export const renderLikes = (cardElement, cardObject) => {
   const likeButton = cardElement.querySelector(".card__like-button");
   const cardLikes = cardElement.querySelector(".card__likes");
-  likeButton.dataset.parentCardId = cardElement.dataset.cardId; 
+  likeButton.dataset.parentCardId = cardElement.dataset.cardId;
 
   const likesAmount = cardObject.likes.length;
-  
+
   if (likesAmount > 0) {
     cardLikes.textContent = cardObject.likes.length;
+    cardLikes.classList.remove("no-likes");
   } else {
-    cardLikes.classList.add('no-likes'); 
+    cardLikes.classList.add("no-likes");
   }
 
-  // const likesArray = cardObject.likes; 
-  // console.log(likesArray.some((likeInfo) => {
-  //     return !likeInfo._id == myProfile._id; 
-  //   })); 
-}
+  const hasMyLike = cardObject.likes.some((like) => {
+    return like._id == myProfile._id;
+  });
+
+  if (hasMyLike) {
+    likeButton.classList.add("card__like-button_is-active");
+  } else {
+    likeButton.classList.remove("card__like-button_is-active");
+  }
+};

@@ -9,15 +9,14 @@ export const GET = (url) => {
   })
     .then((res) => {
       if (res.ok) {
+        console.log("[GET] Успешно", res, url);
         return res.json();
       } else {
         return Promise.reject(res.status);
       }
     })
     .catch((err) => {
-      console.log(
-        `Ошибка в запросе GET: ${err}.\nПопробуйте перезагрузить страницу.`
-      );
+      console.log(`Ошибка в запросе GET: ${err}.`);
       errorPage.classList.add("server-error-visible");
       errorPage.textContent = `Ошибка в запросе GET: ${err}.\nПопробуйте перезагрузить страницу.`;
     });
@@ -34,7 +33,7 @@ export const PATCH = (obj, url) => {
   })
     .then((res) => {
       if (res.ok) {
-        console.log('PATCH, успешно', obj, url, res); 
+        console.log("[PATCH] Успешно", obj, url, res);
         return res.json();
       } else {
         return Promise.reject(`Что-то пошло не так: ${res.status}`);
@@ -49,10 +48,8 @@ export const PATCH = (obj, url) => {
     });
 };
 
-export const deleteCard = (cardId) => {
-  const card = document.querySelector(`[data-card-id="${cardId}"]`);
-  const cardURL = initialCardsURL + "/" + cardId;
-  fetch(cardURL, {
+export const DELETE = (url) => {
+  return fetch(url, {
     method: "DELETE",
     headers: {
       authorization: authorizationToken,
@@ -61,17 +58,28 @@ export const deleteCard = (cardId) => {
   })
     .then((res) => {
       if (res.ok) {
-        console.log("Удалено", cardId, card, res);
+        console.log("[DELETE] Успешно", res, url);
         return res.json();
       } else {
         return Promise.reject(`Что-то пошло не так: ${res.status}`);
       }
     })
     .catch((err) => {
-      console.log("Ошибка при удалении карточки: ", err, cardId, card);
+      console.log("Ошибка в запросе DELETE:", err, url);
       return Promise.reject(`Что-то пошло не так: ${err}`);
     });
-  card.remove();
+};
+
+export const deleteCard = (cardId) => {
+  const card = document.querySelector(`[data-card-id="${cardId}"]`);
+  const cardURL = initialCardsURL + "/" + cardId;
+  DELETE(cardURL)
+    .then(() => {
+      card.remove();
+    })
+    .catch((err) => {
+      console.log("Не удалось удалить карточку", err);
+    });
 };
 
 export const POST = (obj, url) => {
@@ -85,14 +93,14 @@ export const POST = (obj, url) => {
   })
     .then((res) => {
       if (res.ok) {
-        console.log("POST", obj, url, " — успешно");
+        console.log("[POST] Успешно", obj, url);
         return res.json();
       } else {
         return Promise.reject(`Что-то пошло не так: ${res.status}`);
       }
     })
     .catch((err) => {
-      console.log("Ошибка в запросе POST", obj, url, err);
+      console.log("Ошибка в запросе POST:", obj, url, err);
       return Promise.reject(`Что-то пошло не так: ${err}`);
     });
 };
@@ -108,14 +116,14 @@ export const PUT = (obj, url) => {
   })
     .then((res) => {
       if (res.ok) {
-        console.log("PUT", obj, url, " — успешно");
+        console.log("[PUT] Успешно", obj, url);
         return res.json();
       } else {
         return Promise.reject(`Что-то пошло не так: ${res.status}`);
       }
     })
     .catch((err) => {
-      console.log("Ошибка в запросе PUT", obj, url, err);
+      console.log("Ошибка в запросе PUT:", obj, url, err);
       return Promise.reject(`Что-то пошло не так: ${err}`);
     });
 };
