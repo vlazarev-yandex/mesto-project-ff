@@ -86,6 +86,7 @@ export const renderLikes = (cardElement, cardObject) => {
     cardLikes.textContent = cardObject.likes.length;
     cardLikes.classList.remove("no-likes");
   } else {
+    cardLikes.textContent = cardObject.likes.length;
     cardLikes.classList.add("no-likes");
   }
 

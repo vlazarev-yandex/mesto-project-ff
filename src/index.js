@@ -29,9 +29,6 @@ export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`
 export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
 
 const content = document.querySelector(".content");
-export const errorPage = document.querySelector(".server-error");
-export const errorTitle = errorPage.querySelector(".error-title");
-export const errorMessage = errorPage.querySelector(".error-message");
 export const placesList = content.querySelector(".places__list");
 
 /* управляем модальным окном изменения профиля */
@@ -68,6 +65,7 @@ editProfileForm.addEventListener("submit", (event) => {
   /* чтобы было наглядно, как переключается кнопка */
   setTimeout(() => {
     updateProfileInfo(titleInput.value, descriptionInput.value);
+    console.log(updateProfilePhoto); 
     closeModal(popupTypeEdit);
     renderLoading(false, editProfileFormButton);
   }, 300);

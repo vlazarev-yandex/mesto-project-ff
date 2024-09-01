@@ -1,4 +1,4 @@
-import { errorPage, errorTitle, errorMessage, initialCardsURL } from "..";
+import { initialCardsURL } from "..";
 const authorizationToken = "936197d7-9c28-4a02-b461-a2e30a81b6a7";
 
 export const GET = (url) => {
@@ -17,8 +17,6 @@ export const GET = (url) => {
     })
     .catch((err) => {
       console.log(`Ошибка в запросе GET: ${err}.`);
-      errorPage.classList.add("server-error-visible");
-      errorPage.textContent = `Ошибка в запросе GET: ${err}.\nПопробуйте перезагрузить страницу.`;
     });
 };
 
@@ -41,9 +39,6 @@ export const PATCH = (obj, url) => {
     })
     .catch((err) => {
       console.log("Ошибка в запросе PATCH:", err, obj, url);
-      errorPage.classList.add("server-error-visible");
-      errorTitle.textContent = err;
-      errorMessage.textContent = "Ошибка. Попробуйте перезагрузить страницу";
       return Promise.reject(`Что-то пошло не так: ${err}`);
     });
 };

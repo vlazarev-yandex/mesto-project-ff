@@ -1,5 +1,6 @@
 import { cohortName, myProfile } from "..";
 import { DELETE, deleteCard, GET, PUT } from "./api";
+import { notify, notifications } from "./notifications";
 import { renderDeleteButton, renderLikes } from "./renderPageFromServer";
 // @todo: Темплейт карточки
 function getCardTemplate() {
@@ -48,8 +49,10 @@ export function likeFunction(event) {
 
   if (!likeButtonHasMyLike) {
     putLike(likeButton, myProfile, likeURL);
+    notify(notifications.likeMessage); 
   } else {
     removeLike(likeButton, likeURL);
+    notify(notifications.dislikeMessage); 
   }
 }
 

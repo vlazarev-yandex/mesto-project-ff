@@ -25,6 +25,28 @@
   opacity: 0.6;
 }
 
+.card__like-button:active {
+  animation: like-animation 0.3s normal ease-in 1;
+}
+
+@keyframes like-animation {
+  from {
+    scale: 1; 
+  }
+  25% {
+    scale: 1.2; 
+  }
+  50% {
+    scale: 0.9; 
+  }
+  75% {
+    scale: 1.1; 
+  }
+  to {
+    scale: 1; 
+  }
+}
+
 .card__likes {
   text-align: center;
   margin: 0;
