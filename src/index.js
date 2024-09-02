@@ -65,6 +65,7 @@ editProfileForm.addEventListener("submit", (event) => {
     console.log(updateProfilePhoto);
     closeModal(popupTypeEdit);
     renderLoading(false, editProfileFormButton);
+    notify(notifications.profileInfoUpdated);
     clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
   }, 300);
 });
@@ -203,6 +204,7 @@ editProfileImageForm.addEventListener("submit", (event) => {
       editProfileImageFormButton,
       validationConfig
     );
+    notify(notifications.profileAvatarUpdated);
   }, 300);
 });
 
@@ -222,7 +224,6 @@ enableValidation(validationConfig);
 
 /* загружаем профиль на страницу */
 renderProfile();
-/* ещё раз включаем валидацию, когда данные дошли — так у кнопок будут актуальные состояния */
 
 /* создаём первичный список карточек */
 renderInitialCards();
