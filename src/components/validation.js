@@ -77,7 +77,7 @@ export const enableValidation = (validationConfig) => {
   });
 };
 
-export function clearValidation(popup, validationConfig) {
+export function clearValidation(popup, buttonElement, validationConfig) {
   const form = popup.querySelector(validationConfig.formSelector);
   const inputList = Array.from(
     form.querySelectorAll(validationConfig.inputSelector)
@@ -85,4 +85,5 @@ export function clearValidation(popup, validationConfig) {
   inputList.forEach((input) => {
     hideError(form, input, validationConfig.errorClass);
   });
+  toggleButtonState(inputList, buttonElement, validationConfig); 
 }

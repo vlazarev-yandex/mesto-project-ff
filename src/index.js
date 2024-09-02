@@ -12,18 +12,13 @@ import {
   updateProfileInfo,
   updateProfilePhoto,
 } from "./components/updateServerData.js";
-import {
-  renderLoading,
-  deleteCard,
-  POST,
-  GET,
-} from "./components/api.js";
+import { renderLoading, deleteCard, POST, GET } from "./components/api.js";
 import { notifications, notify } from "./components/notifications.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
 export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
-export const myProfile = await GET(profileDataURL); 
+export const myProfile = await GET(profileDataURL);
 
 export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
 export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
@@ -51,6 +46,7 @@ export const descriptionInput =
 const editProfileFormButton = editProfileForm.querySelector("button");
 
 profileEditButton.addEventListener("click", (event) => {
+  clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
   openModal(popupTypeEdit);
 
   titleInput.value = profileTitle.textContent;
@@ -66,9 +62,10 @@ editProfileForm.addEventListener("submit", (event) => {
   /* чтобы было наглядно, как переключается кнопка */
   setTimeout(() => {
     updateProfileInfo(titleInput.value, descriptionInput.value);
-    console.log(updateProfilePhoto); 
+    console.log(updateProfilePhoto);
     closeModal(popupTypeEdit);
     renderLoading(false, editProfileFormButton);
+    clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
   }, 300);
 });
 
@@ -96,6 +93,7 @@ addButton.addEventListener("click", (event) => {
 });
 
 popupTypeNewCard_closeButton.addEventListener("click", (event) => {
+  clearValidation(popupTypeNewCard, newCardFormButton, validationConfig);
   closeModal(popupTypeNewCard);
 });
 
@@ -104,27 +102,28 @@ newCardForm.addEventListener("submit", (event) => {
   renderLoading(true, newCardFormButton);
 
   let newCard = {
-    likes: [], 
-    createdAt: "", 
+    likes: [],
+    createdAt: "",
     name: placeNameInput.value,
     link: linkInput.value,
     _id: "",
-    owner: myProfile
+    owner: myProfile,
   };
-  
+
   const cardElement = createCard(
     newCard,
     likeFunction,
-    imagePopupCallback, 
+    imagePopupCallback,
     deleteCard
   );
 
-  POST(newCard, newCardURL)
-  .then((res) => {
-    cardElement.dataset.cardId = res._id; 
-    cardElement.querySelector(".card__like-button").dataset.parentCardId = cardElement.dataset.cardId;
-    cardElement.querySelector(".card__delete-button").dataset.parentCardId = cardElement.dataset.cardId;
-  });      
+  POST(newCard, newCardURL).then((res) => {
+    cardElement.dataset.cardId = res._id;
+    cardElement.querySelector(".card__like-button").dataset.parentCardId =
+      cardElement.dataset.cardId;
+    cardElement.querySelector(".card__delete-button").dataset.parentCardId =
+      cardElement.dataset.cardId;
+  });
 
   /* чтобы было наглядно, как переключается кнопка */
   setTimeout(() => {
@@ -132,8 +131,10 @@ newCardForm.addEventListener("submit", (event) => {
     closeModal(popupTypeNewCard);
     newCardForm.reset();
     placesList.prepend(cardElement);
-    notify(notifications.newCardMessage); 
+    notify(notifications.newCardMessage);
   }, 300);
+
+  clearValidation(popupTypeNewCard, newCardFormButton, validationConfig);
 });
 
 /* открываем поп-ап с картинкой */
@@ -169,12 +170,22 @@ export const linkProfileImageInput =
   editProfileImageForm.elements["link-to-image"];
 
 profileImage.addEventListener("click", (event) => {
+  clearValidation(
+    popupEditProfileImage,
+    editProfileImageFormButton,
+    validationConfig
+  );
   openModal(popupEditProfileImage);
   linkProfileImageInput.value = removeURL(profileImage.style.backgroundImage);
 });
 
 buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
   closeModal(popupEditProfileImage);
+  clearValidation(
+    popupEditProfileImage,
+    editProfileImageFormButton,
+    validationConfig
+  );
 });
 
 editProfileImageForm.addEventListener("submit", (event) => {
@@ -187,6 +198,11 @@ editProfileImageForm.addEventListener("submit", (event) => {
     profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
     updateProfilePhoto(linkProfileImageInput.value);
     closeModal(popupEditProfileImage);
+    clearValidation(
+      popupEditProfileImage,
+      editProfileImageFormButton,
+      validationConfig
+    );
   }, 300);
 });
 
@@ -205,9 +221,8 @@ export const validationConfig = {
 enableValidation(validationConfig);
 
 /* загружаем профиль на страницу */
-renderProfile(); 
+renderProfile();
 /* ещё раз включаем валидацию, когда данные дошли — так у кнопок будут актуальные состояния */
 
 /* создаём первичный список карточек */
 renderInitialCards();
-
