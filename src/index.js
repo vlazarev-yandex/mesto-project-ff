@@ -1,7 +1,7 @@
 import "./styles/index.css";
 
 import { openModal, closeModal } from "./components/modal.js";
-import { createCard, likeFunction } from "./components/cards.js";
+import { createCard, likeFunction } from "./components/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import {
@@ -18,6 +18,7 @@ import {
   POST,
   GET,
 } from "./components/api.js";
+import { notifications, notify } from "./components/notifications.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
@@ -114,7 +115,8 @@ newCardForm.addEventListener("submit", (event) => {
   const cardElement = createCard(
     newCard,
     likeFunction,
-    imagePopupCallback
+    imagePopupCallback, 
+    deleteCard
   );
 
   POST(newCard, newCardURL)
@@ -130,6 +132,7 @@ newCardForm.addEventListener("submit", (event) => {
     closeModal(popupTypeNewCard);
     newCardForm.reset();
     placesList.prepend(cardElement);
+    notify(notifications.newCardMessage); 
   }, 300);
 });
 
@@ -188,7 +191,7 @@ editProfileImageForm.addEventListener("submit", (event) => {
 });
 
 // Вынес в глобальную переменную, а не в аргумент, тк кажется, что эти классы — это просто глобальный инпут. Типа «я в своём коде расставил вот такие классы». Тогда проще объявить это в глобальном поле, а не передавать аргументом во множество функций.
-export const classListObject = {
+export const validationConfig = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
   submitButtonSelector: ".popup__button",
@@ -199,11 +202,12 @@ export const classListObject = {
 };
 
 /* включаем валидацию */
-enableValidation();
+enableValidation(validationConfig);
 
 /* загружаем профиль на страницу */
-renderProfile().then(enableValidation);
+renderProfile(); 
 /* ещё раз включаем валидацию, когда данные дошли — так у кнопок будут актуальные состояния */
 
 /* создаём первичный список карточек */
 renderInitialCards();
+

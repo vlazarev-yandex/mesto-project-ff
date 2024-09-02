@@ -6,7 +6,7 @@ import {
 } from "..";
 import { GET, deleteCard } from "./api.js";
 import { makeURL } from "./urlValidation.js";
-import { createCard, likeFunction } from "./cards.js";
+import { createCard, likeFunction } from "./card.js";
 import {
   profileDataURL,
   initialCardsURL,
@@ -37,18 +37,6 @@ export const renderProfile = () => {
 };
 
 /* рисуем список начальных карточек по данным с сервера */
-export const renderDeleteButton = (cardElement) => {
-  const deleteButton = cardElement.querySelector(".card__delete-button");
-  deleteButton.classList.add("card__delete-button-active");
-  deleteButton.dataset.parentCardId = cardElement.dataset.cardId;
-
-  deleteButton.addEventListener("click", (event) => {
-    deleteCard(deleteButton.dataset.parentCardId);
-  });
-
-  return deleteButton;
-};
-
 import { placesList } from "..";
 
 const sortCards = (cardsArray) => {
@@ -68,7 +56,8 @@ export const renderInitialCards = () => {
       const cardElement = createCard(
         item,
         likeFunction,
-        imagePopupCallback
+        imagePopupCallback, 
+        deleteCard
       );
       placesList.append(cardElement);
     });
@@ -94,9 +83,5 @@ export const renderLikes = (cardElement, cardObject) => {
     return like._id == myProfile._id;
   });
 
-  if (hasMyLike) {
-    likeButton.classList.add("card__like-button_is-active");
-  } else {
-    likeButton.classList.remove("card__like-button_is-active");
-  }
+  likeButton.classList.toggle("card__like-button_is-active", hasMyLike);
 };

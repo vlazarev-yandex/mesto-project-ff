@@ -8,52 +8,55 @@ function getCardTemplate() {
   return cardTemplate.querySelector(".places__item").cloneNode(true);
 }
 
-const putLike = (button, profile, url) => {
-  const card = document.querySelector(
-    `[data-card-id="${button.dataset.parentCardId}"]`
-  );
-  PUT(profile, url)
+const putLike = (cardId) => {
+  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${cardId}`;
+
+  return PUT(myProfile, likeURL)
     .then((res) => {
       console.log("Отправил лайк на сервер успешно", res);
-      button.classList.add("card__like-button_is-active");
-      renderLikes(card, res);
+      notify(notifications.likeMessage);
+      return res; 
     })
     .catch((err) => {
       console.log("Отправил лайк на сервер, но что-то не так: ", err);
     });
 };
 
-const removeLike = (button, url) => {
-  const card = document.querySelector(
-    `[data-card-id="${button.dataset.parentCardId}"]`
-  );
+const removeLike = (cardId) => {
+  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${cardId}`;
 
-  DELETE(url)
+  return DELETE(likeURL)
     .then((res) => {
       console.log("Лайк удалён", res);
-      button.classList.remove("card__like-button_is-active");
-      renderLikes(card, res);
+      notify(notifications.dislikeMessage);
+      return res; 
     })
     .catch((err) => {
-      console.log("Ошибка при снятии лайка", err, url);
+      console.log("Ошибка при снятии лайка", err, cardId);
     });
 };
 
 export function likeFunction(event) {
   const likeButton = event.target;
-  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${likeButton.dataset.parentCardId}`;
-
+  const cardId = likeButton.dataset.parentCardId; 
+  const card = document.querySelector(`[data-card-id="${cardId}"]`); 
   const likeButtonHasMyLike = likeButton.classList.contains(
     "card__like-button_is-active"
   );
 
-  if (!likeButtonHasMyLike) {
-    putLike(likeButton, myProfile, likeURL);
-    notify(notifications.likeMessage); 
-  } else {
-    removeLike(likeButton, likeURL);
-    notify(notifications.dislikeMessage); 
-  }
+  const likeMethod = likeButtonHasMyLike ? removeLike : putLike;
+  
+  likeMethod(cardId)
+    .then((res) => {
+      likeButton.classList.toggle("card__like-button_is-active");
+      renderLikes(card, res);
+    })
+    .catch((err) => {
+      console.log(
+        `Ошибка при ${likeButtonHasMyLike ? "снятии" : "постановке"} лайка`,
+        err
+      );
+    });
 }
 
 // @todo: DOM узлы
@@ -62,7 +65,12 @@ const content = document.querySelector(".content");
 const placesList = content.querySelector(".places__list");
 
 // @todo: Функция создания карточки
-export function createCard(cardObject, likeFunction, imagePopupCallback) {
+export function createCard(
+  cardObject,
+  likeFunction,
+  imagePopupCallback,
+  deleteCard
+) {
   const cardElement = getCardTemplate();
 
   //кладём контент в шаблон
@@ -79,13 +87,14 @@ export function createCard(cardObject, likeFunction, imagePopupCallback) {
   renderLikes(cardElement, cardObject);
 
   if (cardElement.dataset.cardOwnerId === myProfile._id) {
-    renderDeleteButton(cardElement);
-    /* слушатель теперь вешаю внутри функции отрисовки кнопки удаления, только для активных кнопок */
+    const deleteButton = cardElement.querySelector(".card__delete-button");
+    deleteButton.classList.add("card__delete-button-active");
+    deleteButton.dataset.parentCardId = cardElement.dataset.cardId;
+    deleteButton.addEventListener("click", deleteCard);
   }
 
   cardImage.addEventListener("click", (event) => {
     imagePopupCallback(cardImage);
-
   });
 
   const likeButton = cardElement.querySelector(".card__like-button");

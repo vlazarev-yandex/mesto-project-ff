@@ -1,5 +1,3 @@
-import { classListObject } from "..";
-
 const setValidityMessage = (input) => {
   const InputValidity = input.validity;
 
@@ -10,8 +8,8 @@ const setValidityMessage = (input) => {
   }
 };
 
-const showError = (form, input, errorMessage) => {
-  input.classList.add(classListObject.errorClass);
+const showError = (form, input, errorMessage, errorClass) => {
+  input.classList.add(errorClass);
 
   const inputError = form.querySelector(`.${input.id}-error`);
   inputError.classList.remove("popup__input_transparent_text");
@@ -20,8 +18,8 @@ const showError = (form, input, errorMessage) => {
   //   });
 };
 
-const hideError = (form, input) => {
-  input.classList.remove(classListObject.errorClass);
+const hideError = (form, input, errorClass) => {
+  input.classList.remove(errorClass);
 
   const inputError = form.querySelector(`.${input.id}-error`);
   inputError.classList.add("popup__input_transparent_text");
@@ -30,25 +28,25 @@ const hideError = (form, input) => {
   //   });
 };
 
-const checkInputValidity = (form, input) => {
+const checkInputValidity = (form, input, validationConfig) => {
   setValidityMessage(input);
 
-  if (!input.validity.valid) showError(form, input, input.validationMessage);
-  else hideError(form, input);
+  if (!input.validity.valid) showError(form, input, input.validationMessage, validationConfig.errorClass);
+  else hideError(form, input, validationConfig.errorClass);
 };
 
-function setEventListeners(form) {
+function setEventListeners(form, validationConfig) {
   const inputList = Array.from(
-    form.querySelectorAll(classListObject.inputSelector)
+    form.querySelectorAll(validationConfig.inputSelector)
   );
   const buttonElement = form.querySelector(
-    classListObject.submitButtonSelector
+    validationConfig.submitButtonSelector
   );
-  toggleButtonState(inputList, buttonElement);
+  toggleButtonState(inputList, buttonElement, validationConfig);
   inputList.forEach((input) => {
     input.addEventListener("input", () => {
-      checkInputValidity(form, input);
-      toggleButtonState(inputList, buttonElement);
+      checkInputValidity(form, input, validationConfig);
+      toggleButtonState(inputList, buttonElement, validationConfig);
     });
   });
 }
@@ -59,35 +57,32 @@ const hasInvalidInput = (inputList) => {
   });
 };
 
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, validationConfig) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add(classListObject.inactiveButtonClass);
+    buttonElement.classList.add(validationConfig.inactiveButtonClass);
   } else {
-    buttonElement.classList.remove(classListObject.inactiveButtonClass);
+    buttonElement.classList.remove(validationConfig.inactiveButtonClass);
   }
 };
 
-export const enableValidation = () => {
+export const enableValidation = (validationConfig) => {
   const formList = Array.from(
-    document.querySelectorAll(classListObject.formSelector)
+    document.querySelectorAll(validationConfig.formSelector)
   );
   formList.forEach((form) => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
     });
-    setEventListeners(form);
+    setEventListeners(form, validationConfig);
   });
 };
 
-clearValidation;
-
 export function clearValidation(popup, validationConfig) {
-  // validationConfig у меня нигде не используется, не понял, зачем нужен этот аргумент.
-  const form = popup.querySelector(classListObject.formSelector);
+  const form = popup.querySelector(validationConfig.formSelector);
   const inputList = Array.from(
-    form.querySelectorAll(classListObject.inputSelector)
+    form.querySelectorAll(validationConfig.inputSelector)
   );
   inputList.forEach((input) => {
-    hideError(form, input);
+    hideError(form, input, validationConfig.errorClass);
   });
 }
