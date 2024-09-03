@@ -69,7 +69,6 @@ editProfileForm.addEventListener("submit", (event) => {
       .then((res) => {
         profileTitle.textContent = titleInput.value;
         profileDescription.textContent = descriptionInput.value;
-        closeModal(popupTypeEdit);
         notify(notifications.profileInfoUpdated);
       })
       .catch((err) => {
@@ -81,6 +80,7 @@ editProfileForm.addEventListener("submit", (event) => {
         clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
       })
   }
+  closeModal(popupTypeEdit);
 });
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
@@ -204,24 +204,34 @@ buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
 
 editProfileImageForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  renderLoading(true, editProfileImageFormButton);
-
-  /* чтобы было наглядно, как переключается кнопка */
-  setTimeout(() => {
-    renderLoading(false, editProfileImageFormButton);
-    profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
-    updateProfilePhoto(linkProfileImageInput.value);
+  const inputHasNoNewInfo = removeURL(profileImage.style.backgroundImage) == linkProfileImageInput.value; 
+  
+  if (inputHasNoNewInfo) {
     closeModal(popupEditProfileImage);
-    clearValidation(
-      popupEditProfileImage,
-      editProfileImageFormButton,
-      validationConfig
-    );
-    notify(notifications.profileAvatarUpdated);
-  }, 300);
+  } else {
+    renderLoading(true, editProfileImageFormButton);
+    updateProfilePhoto(linkProfileImageInput.value)
+    .then( () => {
+      profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
+      notify(notifications.profileAvatarUpdated);
+    })
+    .catch((err) => {
+      console.log("Ошибка при обновлении информации в профиле:", err);
+      notify(notifications.profileAvatarUpdatedErr);
+    })
+    .finally( () => {
+      renderLoading(false, editProfileImageFormButton);
+      clearValidation(
+        popupEditProfileImage,
+        editProfileImageFormButton,
+        validationConfig
+      );
+      closeModal(popupEditProfileImage);
+    }); 
+  }
 });
 
-// Вынес в глобальную переменную, а не в аргумент, тк кажется, что эти классы — это просто глобальный инпут. Типа «я в своём коде расставил вот такие классы». Тогда проще объявить это в глобальном поле, а не передавать аргументом во множество функций.
+/* включаем валидацию */
 export const validationConfig = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
@@ -232,7 +242,6 @@ export const validationConfig = {
   errorClass: "popup__error_visible",
 };
 
-/* включаем валидацию */
 enableValidation(validationConfig);
 
 /* загружаем профиль на страницу */

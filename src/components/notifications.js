@@ -66,4 +66,8 @@ export const notifications = {
     title: "Аватарка обновлена!",
     text: "Её уже видят другие участники проекта",
   },
+  profileAvatarUpdatedErr: {
+    title: "Что-то пошло не так!",
+    text: "Аватарку обновить не удалось",
+  },
 };
