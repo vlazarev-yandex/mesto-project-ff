@@ -12,9 +12,9 @@ import {
   updateProfileInfo,
   updateProfilePhoto,
 } from "./components/updateServerData.js";
-import { renderLoading, POST, GET } from "./components/api.js";
+import { POST, GET } from "./components/api.js";
 import { notifications, notify } from "./components/notifications.js";
-import { changeTextSmoothly } from "./components/transitions.js";
+import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
@@ -67,8 +67,8 @@ editProfileForm.addEventListener("submit", (event) => {
 
     updateProfileInfo(titleInput.value, descriptionInput.value)
       .then((res) => {
-        changeTextSmoothly(profileTitle, titleInput.value);
-        changeTextSmoothly(profileDescription, descriptionInput.value);
+        changeTextSmoothly(profileTitle, res.name);
+        changeTextSmoothly(profileDescription, res.about);
         notify(notifications.profileInfoUpdated);
       })
       .catch((err) => {
@@ -197,14 +197,14 @@ editProfileImageForm.addEventListener("submit", (event) => {
   } else {
     renderLoading(true, editProfileImageFormButton);
     updateProfilePhoto(linkProfileImageInput.value)
-      .then(() => {
+      .then((res) => {
         profileImage.style.backgroundImage = makeURL(
-          linkProfileImageInput.value
+          res.avatar
         );
         notify(notifications.profileAvatarUpdated);
       })
       .catch((err) => {
-        console.log("Ошибка при обновлении информации в профиле:", err);
+        console.log("Ошибка при обновлении аватарки:", err);
         notify(notifications.profileAvatarUpdatedErr);
       })
       .finally(() => {

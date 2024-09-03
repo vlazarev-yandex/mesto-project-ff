@@ -110,11 +110,3 @@ export const PUT = (obj, url) => {
       return Promise.reject(`Что-то пошло не так: ${err}`);
     });
 };
-
-export function renderLoading(isLoading, button) {
-  if (isLoading) {
-    button.textContent = "Сохранение...";
-  } else {
-    button.textContent = "Сохранить";
-  }
-}
