@@ -1,24 +1,4 @@
-const toggleVisibility = (object) => {
-  if (object.classList.contains("notification-hidden")) {
-    object.classList.remove("notification-hidden");
-    setTimeout(function () {
-      object.classList.remove("notification-visually-hidden");
-    }, 20);
-  } else {
-    object.classList.add("notification-visually-hidden");
-    object.addEventListener(
-      "transitionend",
-      function (event) {
-        object.classList.add("notification-hidden");
-      },
-      {
-        capture: false,
-        once: true,
-        passive: false,
-      }
-    );
-  }
-};
+import { toggleVisibility } from "./transitions";
 
 export const notify = (message) => {
   const notification = document.querySelector(".server-notification");
@@ -30,10 +10,10 @@ export const notify = (message) => {
   notificationTitle.textContent = message.title;
   notificationMessage.textContent = message.text;
 
-  toggleVisibility(notification);
+  toggleVisibility(notification, "notification");
 
   setTimeout(() => {
-    toggleVisibility(notification);
+    toggleVisibility(notification, "notification");
   }, 2000);
 };
 
@@ -49,6 +29,10 @@ export const notifications = {
   newCardMessage: {
     title: "Добавили новую карточку!",
     text: "Ну уж эта точно соберёт много лайков",
+  },
+  newCardMessageErr: {
+    title: "Новую карточку загрузить не удалось!",
+    text: "Обновите страницу и попробуйте ещё раз",
   },
   deleteCardMessage: {
     title: "Карточка удалена!",

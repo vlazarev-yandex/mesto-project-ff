@@ -1,4 +1,4 @@
-import { changeTextSmoothly } from "./textTransitions";
+import { changeTextSmoothly } from "./transitions";
 const setValidityMessage = (input) => {
   const InputValidity = input.validity;
 

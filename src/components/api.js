@@ -1,5 +1,3 @@
-import { initialCardsURL } from "..";
-import { notify, notifications } from "./notifications";
 const authorizationToken = "936197d7-9c28-4a02-b461-a2e30a81b6a7";
 
 export const GET = (url) => {
@@ -64,21 +62,6 @@ export const DELETE = (url) => {
     .catch((err) => {
       console.log("Ошибка в запросе DELETE:", err, url);
       return Promise.reject(`Что-то пошло не так: ${err}`);
-    });
-};
-
-/* надо перенести в card.js */
-export const deleteCard = (event) => {
-  const cardId = event.target.dataset.parentCardId;
-  const card = document.querySelector(`[data-card-id="${cardId}"]`);
-  const cardURL = initialCardsURL + "/" + cardId;
-  DELETE(cardURL)
-    .then(() => {
-      card.remove();
-      notify(notifications.deleteCardMessage);
-    })
-    .catch((err) => {
-      console.log("Не удалось удалить карточку", err);
     });
 };
 

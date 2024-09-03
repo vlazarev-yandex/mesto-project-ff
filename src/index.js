@@ -1,7 +1,7 @@
 import "./styles/index.css";
 
 import { openModal, closeModal } from "./components/modal.js";
-import { createCard, likeFunction } from "./components/card.js";
+import { postNewCard, deleteCard } from "./components/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import {
@@ -12,9 +12,9 @@ import {
   updateProfileInfo,
   updateProfilePhoto,
 } from "./components/updateServerData.js";
-import { renderLoading, deleteCard, POST, GET } from "./components/api.js";
+import { renderLoading, POST, GET } from "./components/api.js";
 import { notifications, notify } from "./components/notifications.js";
-import { changeTextSmoothly } from "./components/textTransitions.js";
+import { changeTextSmoothly } from "./components/transitions.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
@@ -48,10 +48,9 @@ const editProfileFormButton = editProfileForm.querySelector("button");
 
 profileEditButton.addEventListener("click", (event) => {
   clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
-  openModal(popupTypeEdit);
-
   titleInput.value = profileTitle.textContent;
   descriptionInput.value = profileDescription.textContent;
+  openModal(popupTypeEdit);
 });
 
 editProfileForm.addEventListener("submit", (event) => {
@@ -100,8 +99,8 @@ const newCardFormButton = newCardForm.querySelector(".button");
 const placeNameInput = newCardForm.elements["place-name"];
 const linkInput = newCardForm.elements["link"];
 
-placeNameInput.value = "new card";
-linkInput.value = "https://i.postimg.cc/j5NsqWyG/temp-Image-NGHu-Mi.avif";
+placeNameInput.value = "Случайная картинка";
+linkInput.value = "https://random.imagecdn.app/300/300";
 
 addButton.addEventListener("click", (event) => {
   clearValidation(popupTypeNewCard, newCardFormButton, validationConfig);
@@ -117,40 +116,21 @@ newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
   renderLoading(true, newCardFormButton);
 
-  let newCard = {
-    likes: [],
-    createdAt: "",
-    name: placeNameInput.value,
-    link: linkInput.value,
-    _id: "",
-    owner: myProfile,
-  };
-
-  const cardElement = createCard(
-    newCard,
-    likeFunction,
-    imagePopupCallback,
-    deleteCard
-  );
-
-  POST(newCard, newCardURL).then((res) => {
-    cardElement.dataset.cardId = res._id;
-    cardElement.querySelector(".card__like-button").dataset.parentCardId =
-      cardElement.dataset.cardId;
-    cardElement.querySelector(".card__delete-button").dataset.parentCardId =
-      cardElement.dataset.cardId;
-  });
-
-  /* чтобы было наглядно, как переключается кнопка */
-  setTimeout(() => {
-    renderLoading(false, newCardFormButton);
-    closeModal(popupTypeNewCard);
-    newCardForm.reset();
-    placesList.prepend(cardElement);
-    notify(notifications.newCardMessage);
-  }, 300);
-
-  clearValidation(popupTypeNewCard, newCardFormButton, validationConfig);
+  postNewCard(placeNameInput.value, linkInput.value)
+    .then((newCardWithId) => {
+      placesList.prepend(newCardWithId);
+      notify(notifications.newCardMessage);
+    })
+    .catch((err) => {
+      console.log("Ошибка при обновлении информации в профиле:", err);
+      notify(notifications.newCardMessageErr);
+    })
+    .finally(() => {
+      renderLoading(false, newCardFormButton);
+      closeModal(popupTypeNewCard);
+      clearValidation(popupTypeNewCard, newCardFormButton, validationConfig);
+      newCardForm.reset();
+    });
 });
 
 /* открываем поп-ап с картинкой */
@@ -193,6 +173,8 @@ profileImage.addEventListener("click", (event) => {
   );
   openModal(popupEditProfileImage);
   linkProfileImageInput.value = removeURL(profileImage.style.backgroundImage);
+  linkProfileImageInput.focus(); 
+  linkProfileImageInput.select(); 
 });
 
 buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {

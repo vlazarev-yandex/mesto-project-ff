@@ -1,5 +1,5 @@
-import { cohortName, myProfile } from "..";
-import { DELETE, deleteCard, GET, PUT } from "./api";
+import { cohortName, imagePopupCallback, myProfile, newCardURL, initialCardsURL } from "..";
+import { DELETE, GET, PUT, POST } from "./api";
 import { notify, notifications } from "./notifications";
 import { renderDeleteButton, renderLikes } from "./renderPageFromServer";
 // @todo: Темплейт карточки
@@ -15,7 +15,7 @@ const putLike = (cardId) => {
     .then((res) => {
       console.log("Отправил лайк на сервер успешно", res);
       notify(notifications.likeMessage);
-      return res; 
+      return res;
     })
     .catch((err) => {
       console.log("Отправил лайк на сервер, но что-то не так: ", err);
@@ -29,7 +29,7 @@ const removeLike = (cardId) => {
     .then((res) => {
       console.log("Лайк удалён", res);
       notify(notifications.dislikeMessage);
-      return res; 
+      return res;
     })
     .catch((err) => {
       console.log("Ошибка при снятии лайка", err, cardId);
@@ -38,14 +38,14 @@ const removeLike = (cardId) => {
 
 export function likeFunction(event) {
   const likeButton = event.target;
-  const cardId = likeButton.dataset.parentCardId; 
-  const card = document.querySelector(`[data-card-id="${cardId}"]`); 
+  const cardId = likeButton.dataset.parentCardId;
+  const card = document.querySelector(`[data-card-id="${cardId}"]`);
   const likeButtonHasMyLike = likeButton.classList.contains(
     "card__like-button_is-active"
   );
 
   const likeMethod = likeButtonHasMyLike ? removeLike : putLike;
-  
+
   likeMethod(cardId)
     .then((res) => {
       likeButton.classList.toggle("card__like-button_is-active");
@@ -58,6 +58,20 @@ export function likeFunction(event) {
       );
     });
 }
+
+export const deleteCard = (event) => {
+  const cardId = event.target.dataset.parentCardId;
+  const card = document.querySelector(`[data-card-id="${cardId}"]`);
+  const cardURL = initialCardsURL + "/" + cardId;
+  DELETE(cardURL)
+    .then(() => {
+      card.remove();
+      notify(notifications.deleteCardMessage);
+    })
+    .catch((err) => {
+      console.log("Не удалось удалить карточку", err);
+    });
+};
 
 // @todo: DOM узлы
 // глобальные элементы
@@ -102,3 +116,29 @@ export function createCard(
 
   return cardElement;
 }
+
+export const postNewCard = (title, link) => {
+  let newCard = {
+    likes: [],
+    createdAt: "",
+    name: title,
+    link: link,
+    _id: "",
+    owner: myProfile,
+  };
+
+  return POST(newCard, newCardURL)
+    .then((res) => {
+      const cardElement = createCard(res, likeFunction, imagePopupCallback, deleteCard);
+      cardElement.dataset.cardId = res._id;
+      cardElement.querySelector(".card__like-button").dataset.parentCardId =
+        cardElement.dataset.cardId;
+      cardElement.querySelector(".card__delete-button").dataset.parentCardId =
+        cardElement.dataset.cardId;
+      return cardElement;
+    })
+    .catch((err) => {
+      console.log("Не удалось выложить карточку:", err);
+      return Promise.reject(`Что-то пошло не так: ${err}`);
+    });
+};

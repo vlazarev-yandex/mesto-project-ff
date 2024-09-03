@@ -48,10 +48,23 @@
 }
 
 .card__likes {
+  height: fit-content;
   text-align: center;
   margin: 0;
   padding: 0;
+  -webkit-transition: 0.3s;
+  -moz-transition: 0.3s;
+  -ms-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+  overflow: visible;
 }
-.no-likes {
+
+.card__likes-hidden {
   display: none;
 }
+/* 
+.card__likes-visually-hidden {
+  transform: translateY(10px);
+  border: red 1px solid;
+} */

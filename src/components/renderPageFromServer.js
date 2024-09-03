@@ -4,9 +4,9 @@ import {
   profileImage,
   imagePopupCallback,
 } from "..";
-import { GET, deleteCard } from "./api.js";
+import { GET } from "./api.js";
 import { makeURL } from "./urlValidation.js";
-import { createCard, likeFunction } from "./card.js";
+import { createCard, likeFunction, deleteCard } from "./card.js";
 import {
   profileDataURL,
   initialCardsURL,
@@ -15,6 +15,7 @@ import {
   descriptionInput,
   myProfile,
 } from "..";
+import { changeTextSmoothly, toggleVisibility } from "./transitions.js";
 
 /* рисуем профиль по данным с сервера */
 export const renderProfile = () => {
@@ -72,11 +73,13 @@ export const renderLikes = (cardElement, cardObject) => {
   const likesAmount = cardObject.likes.length;
 
   if (likesAmount > 0) {
-    cardLikes.textContent = cardObject.likes.length;
-    cardLikes.classList.remove("no-likes");
+    changeTextSmoothly(cardLikes, cardObject.likes.length);
+    setTimeout(() => {
+      cardLikes.classList.remove("card__likes-hidden");
+    }, 300); 
   } else {
-    cardLikes.textContent = cardObject.likes.length;
-    cardLikes.classList.add("no-likes");
+    changeTextSmoothly(cardLikes, cardObject.likes.length);
+    cardLikes.classList.add("card__likes-hidden");
   }
 
   const hasMyLike = cardObject.likes.some((like) => {
