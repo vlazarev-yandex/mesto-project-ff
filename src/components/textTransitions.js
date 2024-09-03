@@ -5,5 +5,5 @@ export const changeTextSmoothly = (object, text) => {
     object.textContent = text;
     object.classList.remove("text-visually-hidden");
     object.classList.add("text-visible");
-  }, 300);
+  }, 300); /* можно вынести в переменную */
 };
