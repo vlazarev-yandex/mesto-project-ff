@@ -18,11 +18,12 @@ export const GET = (url) => {
     })
     .catch((err) => {
       console.log(`Ошибка в запросе GET: ${err}.`);
+      return Promise.reject(`Что-то пошло не так: ${err}`);
     });
 };
 
 export const PATCH = (obj, url) => {
-  fetch(url, {
+  return fetch(url, {
     method: "PATCH",
     headers: {
       authorization: authorizationToken,
@@ -66,6 +67,7 @@ export const DELETE = (url) => {
     });
 };
 
+/* надо перенести в card.js */
 export const deleteCard = (event) => {
   const cardId = event.target.dataset.parentCardId;
   const card = document.querySelector(`[data-card-id="${cardId}"]`);

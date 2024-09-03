@@ -58,6 +58,10 @@ export const notifications = {
     title: "Инорфмация обновлена!",
     text: "Её уже видят другие участники проекта",
   },
+  profileInfoUpdatedErr: {
+    title: "Что-то пошло не так!",
+    text: "Информацию обновить не удалось",
+  },
   profileAvatarUpdated: {
     title: "Аватарка обновлена!",
     text: "Её уже видят другие участники проекта",

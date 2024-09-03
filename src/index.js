@@ -55,19 +55,32 @@ profileEditButton.addEventListener("click", (event) => {
 
 editProfileForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  renderLoading(true, editProfileFormButton);
-  profileTitle.textContent = titleInput.value;
-  profileDescription.textContent = descriptionInput.value;
 
-  /* чтобы было наглядно, как переключается кнопка */
-  setTimeout(() => {
-    updateProfileInfo(titleInput.value, descriptionInput.value);
-    console.log(updateProfilePhoto);
+  const inputHasNoNewInfo =
+    profileTitle.textContent == titleInput.value &&
+    profileDescription.textContent == descriptionInput.value;
+
+  if (inputHasNoNewInfo) {
     closeModal(popupTypeEdit);
-    renderLoading(false, editProfileFormButton);
-    notify(notifications.profileInfoUpdated);
-    clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
-  }, 300);
+  } else {
+    renderLoading(true, editProfileFormButton);
+
+    updateProfileInfo(titleInput.value, descriptionInput.value)
+      .then((res) => {
+        profileTitle.textContent = titleInput.value;
+        profileDescription.textContent = descriptionInput.value;
+        closeModal(popupTypeEdit);
+        notify(notifications.profileInfoUpdated);
+      })
+      .catch((err) => {
+        console.log("Ошибка при обновлении информации в профиле:", err);
+        notify(notifications.profileInfoUpdatedErr);
+      })
+      .finally (() => {
+        renderLoading(false, editProfileFormButton);
+        clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
+      })
+  }
 });
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
