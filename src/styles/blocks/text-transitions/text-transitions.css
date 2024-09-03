@@ -1,0 +1,25 @@
+.text-visually-hidden {
+  animation: hidden 0.5s forwards;
+}
+
+.text-visible {
+  animation: visible 0.5s forwards;
+}
+
+@keyframes hidden {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes visible {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

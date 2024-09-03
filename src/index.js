@@ -14,6 +14,7 @@ import {
 } from "./components/updateServerData.js";
 import { renderLoading, deleteCard, POST, GET } from "./components/api.js";
 import { notifications, notify } from "./components/notifications.js";
+import { changeTextSmoothly } from "./components/textTransitions.js";
 
 /* глобальные переменные */
 export const cohortName = "wff-cohort-21";
@@ -67,20 +68,20 @@ editProfileForm.addEventListener("submit", (event) => {
 
     updateProfileInfo(titleInput.value, descriptionInput.value)
       .then((res) => {
-        profileTitle.textContent = titleInput.value;
-        profileDescription.textContent = descriptionInput.value;
+        changeTextSmoothly(profileTitle, titleInput.value);
+        changeTextSmoothly(profileDescription, descriptionInput.value);
         notify(notifications.profileInfoUpdated);
       })
       .catch((err) => {
         console.log("Ошибка при обновлении информации в профиле:", err);
         notify(notifications.profileInfoUpdatedErr);
       })
-      .finally (() => {
+      .finally(() => {
         renderLoading(false, editProfileFormButton);
         clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
-      })
+        closeModal(popupTypeEdit);
+      });
   }
-  closeModal(popupTypeEdit);
 });
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
@@ -103,6 +104,7 @@ placeNameInput.value = "new card";
 linkInput.value = "https://i.postimg.cc/j5NsqWyG/temp-Image-NGHu-Mi.avif";
 
 addButton.addEventListener("click", (event) => {
+  clearValidation(popupTypeNewCard, newCardFormButton, validationConfig);
   openModal(popupTypeNewCard);
 });
 
@@ -204,30 +206,34 @@ buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
 
 editProfileImageForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const inputHasNoNewInfo = removeURL(profileImage.style.backgroundImage) == linkProfileImageInput.value; 
-  
+  const inputHasNoNewInfo =
+    removeURL(profileImage.style.backgroundImage) ==
+    linkProfileImageInput.value;
+
   if (inputHasNoNewInfo) {
     closeModal(popupEditProfileImage);
   } else {
     renderLoading(true, editProfileImageFormButton);
     updateProfilePhoto(linkProfileImageInput.value)
-    .then( () => {
-      profileImage.style.backgroundImage = makeURL(linkProfileImageInput.value);
-      notify(notifications.profileAvatarUpdated);
-    })
-    .catch((err) => {
-      console.log("Ошибка при обновлении информации в профиле:", err);
-      notify(notifications.profileAvatarUpdatedErr);
-    })
-    .finally( () => {
-      renderLoading(false, editProfileImageFormButton);
-      clearValidation(
-        popupEditProfileImage,
-        editProfileImageFormButton,
-        validationConfig
-      );
-      closeModal(popupEditProfileImage);
-    }); 
+      .then(() => {
+        profileImage.style.backgroundImage = makeURL(
+          linkProfileImageInput.value
+        );
+        notify(notifications.profileAvatarUpdated);
+      })
+      .catch((err) => {
+        console.log("Ошибка при обновлении информации в профиле:", err);
+        notify(notifications.profileAvatarUpdatedErr);
+      })
+      .finally(() => {
+        renderLoading(false, editProfileImageFormButton);
+        clearValidation(
+          popupEditProfileImage,
+          editProfileImageFormButton,
+          validationConfig
+        );
+        closeModal(popupEditProfileImage);
+      });
   }
 });
 

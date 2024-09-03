@@ -1,15 +1,15 @@
 const toggleVisibility = (object) => {
-  if (object.classList.contains("hidden")) {
-    object.classList.remove("hidden");
+  if (object.classList.contains("notification-hidden")) {
+    object.classList.remove("notification-hidden");
     setTimeout(function () {
-      object.classList.remove("visually-hidden");
+      object.classList.remove("notification-visually-hidden");
     }, 20);
   } else {
-    object.classList.add("visually-hidden");
+    object.classList.add("notification-visually-hidden");
     object.addEventListener(
       "transitionend",
       function (event) {
-        object.classList.add("hidden");
+        object.classList.add("notification-hidden");
       },
       {
         capture: false,
@@ -20,7 +20,7 @@ const toggleVisibility = (object) => {
   }
 };
 
-export const notify = (message, status) => {
+export const notify = (message) => {
   const notification = document.querySelector(".server-notification");
   const notificationTitle = notification.querySelector(".notification-title");
   const notificationMessage = notification.querySelector(

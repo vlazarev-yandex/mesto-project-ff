@@ -43,11 +43,11 @@
   margin: 0;
 }
 
-.hidden {
+.notification-hidden {
   display: none;
 }
 
-.visually-hidden {
+.notification-visually-hidden {
   opacity: 0;
   transform: translateY(-50px);
 }

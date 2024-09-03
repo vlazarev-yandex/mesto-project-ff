@@ -1,3 +1,4 @@
+import { changeTextSmoothly } from "./textTransitions";
 const setValidityMessage = (input) => {
   const InputValidity = input.validity;
 
@@ -13,25 +14,27 @@ const showError = (form, input, errorMessage, errorClass) => {
 
   const inputError = form.querySelector(`.${input.id}-error`);
   inputError.classList.remove("popup__input_transparent_text");
-  //   inputError.addEventListener("transitionend", () => {
-  inputError.textContent = errorMessage;
-  //   });
+  changeTextSmoothly(inputError, errorMessage);
 };
 
 const hideError = (form, input, errorClass) => {
   input.classList.remove(errorClass);
 
   const inputError = form.querySelector(`.${input.id}-error`);
-  inputError.classList.add("popup__input_transparent_text");
-  //   inputError.addEventListener("transitionend", () => {
-  inputError.textContent = "";
-  //   });
+  const errorMessage = "";
+  changeTextSmoothly(inputError, errorMessage);
 };
 
 const checkInputValidity = (form, input, validationConfig) => {
   setValidityMessage(input);
 
-  if (!input.validity.valid) showError(form, input, input.validationMessage, validationConfig.errorClass);
+  if (!input.validity.valid)
+    showError(
+      form,
+      input,
+      input.validationMessage,
+      validationConfig.errorClass
+    );
   else hideError(form, input, validationConfig.errorClass);
 };
 
@@ -60,10 +63,10 @@ const hasInvalidInput = (inputList) => {
 const toggleButtonState = (inputList, buttonElement, validationConfig) => {
   if (hasInvalidInput(inputList)) {
     buttonElement.classList.add(validationConfig.inactiveButtonClass);
-    buttonElement.disabled = true; 
+    buttonElement.disabled = true;
   } else {
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
-    buttonElement.disabled = false; 
+    buttonElement.disabled = false;
   }
 };
 
@@ -87,5 +90,5 @@ export function clearValidation(popup, buttonElement, validationConfig) {
   inputList.forEach((input) => {
     hideError(form, input, validationConfig.errorClass);
   });
-  toggleButtonState(inputList, buttonElement, validationConfig); 
+  toggleButtonState(inputList, buttonElement, validationConfig);
 }
