@@ -173,8 +173,6 @@ profileImage.addEventListener("click", (event) => {
   );
   openModal(popupEditProfileImage);
   linkProfileImageInput.value = removeURL(profileImage.style.backgroundImage);
-  linkProfileImageInput.focus(); 
-  linkProfileImageInput.select(); 
 });
 
 buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
