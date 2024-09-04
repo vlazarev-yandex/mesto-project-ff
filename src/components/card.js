@@ -1,5 +1,5 @@
 import { cohortName, imagePopupCallback, myProfile, newCardURL, initialCardsURL } from "..";
-import { DELETE, GET, PUT, POST } from "./api";
+import { DELETE, GET, PUT, POST } from "./baseApiMethods";
 import { notify, notifications } from "./notifications";
 import { renderDeleteButton, renderLikes } from "./renderPageFromServer";
 // @todo: Темплейт карточки
@@ -66,6 +66,7 @@ export const deleteCard = (event) => {
   DELETE(cardURL)
     .then(() => {
       card.remove();
+      /* функции запросов к серверу возвращают Promise, в них нет работы с DOM и изменения отображения страницы. */
       notify(notifications.deleteCardMessage);
     })
     .catch((err) => {

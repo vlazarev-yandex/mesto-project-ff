@@ -12,7 +12,7 @@ import {
   updateProfileInfo,
   updateProfilePhoto,
 } from "./components/updateServerData.js";
-import { POST, GET } from "./components/api.js";
+import { POST, GET } from "./components/baseApiMethods.js";
 import { notifications, notify } from "./components/notifications.js";
 import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 

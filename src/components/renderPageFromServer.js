@@ -4,7 +4,7 @@ import {
   profileImage,
   imagePopupCallback,
 } from "..";
-import { GET } from "./api.js";
+import { GET } from "./baseApiMethods.js";
 import { makeURL } from "./urlValidation.js";
 import { createCard, likeFunction, deleteCard } from "./card.js";
 import {
