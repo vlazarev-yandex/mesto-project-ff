@@ -1,7 +1,7 @@
-import { imagePopupCallback, myProfile } from "..";
-import { DELETE, GET, PUT, POST, config } from "./api/baseApiMethods";
-import { renderLikes, likeFunction } from "./api/likeMethods";
-import { deleteCard } from "./api/deleteCard";
+import { imagePopupCallback, myProfile } from "../..";
+import { DELETE, GET, PUT, POST, config } from "../api/baseApiMethods";
+import { renderLikes, likeFunction } from "../cardMethods/likeMethods";
+import { deleteCard } from "./deleteCard";
 
 // @todo: Темплейт карточки
 function getCardTemplate() {

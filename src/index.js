@@ -1,6 +1,6 @@
 import "./styles/index.css";
-import { openModal, closeModal } from "./components/modal.js";
-import { postNewCard } from "./components/card.js";
+import { openModal, closeModal } from "./components/modal/modal.js";
+import { postNewCard } from "./components/cardMethods/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import { renderInitialCards } from "./components/api/renderInitialCards.js";
@@ -8,7 +8,7 @@ import { renderProfile } from "./components/api/renderProfile.js";
 import {
   updateProfileInfo,
   updateProfilePhoto,
-} from "./components/api/updateServerData.js";
+} from "./components/api/updateProfile.js";
 import { notifications, notify } from "./components/notifications.js";
 import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 

@@ -1,4 +1,4 @@
-import { config, DELETE } from "./baseApiMethods";
+import { config, DELETE } from "../api/baseApiMethods";
 import { notify, notifications } from "../notifications";
 
 const deleteCardFromServer = (cardId) => {

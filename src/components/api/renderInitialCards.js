@@ -1,8 +1,8 @@
 import { imagePopupCallback } from "../../index.js";
 import { GET, config } from "./baseApiMethods.js";
-import { likeFunction } from "./likeMethods.js";
-import { createCard } from "../card.js";
-import { deleteCard } from "./deleteCard.js";
+import { likeFunction } from "../cardMethods/likeMethods.js";
+import { createCard } from "../cardMethods/card.js";
+import { deleteCard } from "../cardMethods/deleteCard.js";
 
 /* рисуем список начальных карточек по данным с сервера */
 

@@ -1,8 +1,8 @@
 import { myProfile } from "../..";
 import { notify, notifications } from "../notifications";
-import { config } from "./baseApiMethods.js";
+import { config } from "../api/baseApiMethods.js";
 import { changeTextSmoothly } from "../transitions.js";
-import { PUT, DELETE } from "./baseApiMethods.js";
+import { PUT, DELETE } from "../api/baseApiMethods.js";
 
 const putLike = (cardId) => {
 
