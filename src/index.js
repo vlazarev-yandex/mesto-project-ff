@@ -3,9 +3,7 @@ import { openModal, closeModal } from "./components/modal.js";
 import { postNewCard, deleteCard } from "./components/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
-import {
-  renderInitialCards,
-} from "./components/api/renderInitialCards.js";
+import { renderInitialCards } from "./components/api/renderInitialCards.js";
 import { renderProfile } from "./components/api/renderProfile.js";
 import {
   updateProfileInfo,
@@ -15,16 +13,34 @@ import { notifications, notify } from "./components/notifications.js";
 import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 
 /* отрисовываем профиль и карточки */
-export const myProfile = await renderProfile(); 
-export const initialCards = await renderInitialCards();  
+export const myProfile = await renderProfile();
+export const initialCards = await renderInitialCards();
 
-export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
-export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
+/* включаем валидацию */
+export const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  //inputErrorClass у меня не используется, реализовал через id. Посмотреть: validation.js: 15, validation.js: 25
+  errorClass: "popup__error_visible",
+};
+
+enableValidation(validationConfig);
 
 const content = document.querySelector(".content");
 export const placesList = content.querySelector(".places__list");
 
-/* управляем модальным окном изменения профиля */
+/* управляем профилем */
+const profileInfo = document.querySelector(".profile__info");
+const profileTitle = profileInfo.querySelector(".profile__title");
+const profileDescription = profileInfo.querySelector(".profile__description");
+const profileImage = document.querySelector(".profile__image");
+
+linkProfileImageInput.value = userData.avatar;
+titleInput.value = userData.name;
+descriptionInput.value = userData.about;
 
 const profileEditButton = content.querySelector(".profile__edit-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
@@ -186,9 +202,7 @@ editProfileImageForm.addEventListener("submit", (event) => {
     renderLoading(true, editProfileImageFormButton);
     updateProfilePhoto(linkProfileImageInput.value)
       .then((res) => {
-        profileImage.style.backgroundImage = makeURL(
-          res.avatar
-        );
+        profileImage.style.backgroundImage = makeURL(res.avatar);
         notify(notifications.profileAvatarUpdated);
       })
       .catch((err) => {
@@ -206,19 +220,6 @@ editProfileImageForm.addEventListener("submit", (event) => {
       });
   }
 });
-
-/* включаем валидацию */
-export const validationConfig = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  //inputErrorClass у меня не используется, реализовал через id. Посмотреть: validation.js: 15, validation.js: 25
-  errorClass: "popup__error_visible",
-};
-
-enableValidation(validationConfig);
 
 /* создаём первичный список карточек */
 renderInitialCards();

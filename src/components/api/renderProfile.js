@@ -30,8 +30,4 @@ const getProfile = () => {
       .catch((err) => {
         return Promise.reject(`Не удалось отрисовать профиль: ${err}`);
       });
-    /* добавил первичный стейт, чтобы при открытии поп-апа кнопка сразу была активной */
-    // linkProfileImageInput.value = userData.avatar;
-    // titleInput.value = userData.name;
-    // descriptionInput.value = userData.about;
   };

@@ -1,5 +1,5 @@
-import { cohortName, imagePopupCallback, myProfile } from "..";
-import { DELETE, GET, PUT, POST } from "./api/baseApiMethods";
+import { imagePopupCallback, myProfile } from "..";
+import { DELETE, GET, PUT, POST, config } from "./api/baseApiMethods";
 import { notify, notifications } from "./notifications";
 import { renderLikes, likeFunction } from "./api/likeMethods";
 
@@ -12,7 +12,7 @@ function getCardTemplate() {
 export const deleteCard = (event) => {
   const cardId = event.target.dataset.parentCardId;
   const card = document.querySelector(`[data-card-id="${cardId}"]`);
-  const cardURL = initialCardsURL + "/" + cardId;
+  const cardURL = config.baseUrl + `/cards/` + cardId;
   DELETE(cardURL)
     .then(() => {
       card.remove();
@@ -69,6 +69,8 @@ export function createCard(
 }
 
 export const postNewCard = (title, link) => {
+  const newCardURL = config.baseUrl + `/cards`;
+
   let newCard = {
     likes: [],
     createdAt: "",
@@ -80,7 +82,12 @@ export const postNewCard = (title, link) => {
 
   return POST(newCard, newCardURL)
     .then((res) => {
-      const cardElement = createCard(res, likeFunction, imagePopupCallback, deleteCard);
+      const cardElement = createCard(
+        res,
+        likeFunction,
+        imagePopupCallback,
+        deleteCard
+      );
       cardElement.dataset.cardId = res._id;
       cardElement.querySelector(".card__like-button").dataset.parentCardId =
         cardElement.dataset.cardId;
