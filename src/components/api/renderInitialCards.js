@@ -1,7 +1,8 @@
-import { imagePopupCallback, myProfile } from "../../index.js";
+import { imagePopupCallback } from "../../index.js";
 import { GET, config } from "./baseApiMethods.js";
 import { likeFunction } from "./likeMethods.js";
-import { createCard, deleteCard } from "../card.js";
+import { createCard } from "../card.js";
+import { deleteCard } from "./deleteCard.js";
 
 /* рисуем список начальных карточек по данным с сервера */
 

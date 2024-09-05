@@ -1,28 +1,13 @@
 import { imagePopupCallback, myProfile } from "..";
 import { DELETE, GET, PUT, POST, config } from "./api/baseApiMethods";
-import { notify, notifications } from "./notifications";
 import { renderLikes, likeFunction } from "./api/likeMethods";
+import { deleteCard } from "./api/deleteCard";
 
 // @todo: Темплейт карточки
 function getCardTemplate() {
   const cardTemplate = document.querySelector("#card-template").content;
   return cardTemplate.querySelector(".places__item").cloneNode(true);
 }
-
-export const deleteCard = (event) => {
-  const cardId = event.target.dataset.parentCardId;
-  const card = document.querySelector(`[data-card-id="${cardId}"]`);
-  const cardURL = config.baseUrl + `/cards/` + cardId;
-  DELETE(cardURL)
-    .then(() => {
-      card.remove();
-      /* функции запросов к серверу возвращают Promise, в них нет работы с DOM и изменения отображения страницы. */
-      notify(notifications.deleteCardMessage);
-    })
-    .catch((err) => {
-      console.log("Не удалось удалить карточку", err);
-    });
-};
 
 // @todo: DOM узлы
 // глобальные элементы

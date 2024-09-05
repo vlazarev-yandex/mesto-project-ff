@@ -1,6 +1,6 @@
 import "./styles/index.css";
 import { openModal, closeModal } from "./components/modal.js";
-import { postNewCard, deleteCard } from "./components/card.js";
+import { postNewCard } from "./components/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import { renderInitialCards } from "./components/api/renderInitialCards.js";
@@ -38,20 +38,18 @@ const profileTitle = profileInfo.querySelector(".profile__title");
 const profileDescription = profileInfo.querySelector(".profile__description");
 const profileImage = document.querySelector(".profile__image");
 
-linkProfileImageInput.value = userData.avatar;
-titleInput.value = userData.name;
-descriptionInput.value = userData.about;
-
 const profileEditButton = content.querySelector(".profile__edit-button");
+
 const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeEdit_closeButton = popupTypeEdit.querySelector(".popup__close");
 
 const editProfileForm = document.forms["edit-profile"];
-
 export const titleInput = editProfileForm.elements["profile__title"];
-export const descriptionInput =
-  editProfileForm.elements["profile__description"];
+export const descriptionInput = editProfileForm.elements["profile__description"];
 const editProfileFormButton = editProfileForm.querySelector("button");
+
+titleInput.value = myProfile.name; 
+descriptionInput.value = myProfile.about;
 
 profileEditButton.addEventListener("click", (event) => {
   clearValidation(popupTypeEdit, editProfileFormButton, validationConfig);
@@ -60,7 +58,7 @@ profileEditButton.addEventListener("click", (event) => {
   openModal(popupTypeEdit);
 });
 
-editProfileForm.addEventListener("submit", (event) => {
+editProfileForm.addEventListener("submit", (event) => { 
   event.preventDefault();
 
   const inputHasNoNewInfo =
@@ -92,6 +90,69 @@ editProfileForm.addEventListener("submit", (event) => {
 
 popupTypeEdit_closeButton.addEventListener("click", (event) => {
   closeModal(popupTypeEdit);
+});
+
+/* открываем поп-ап с изменением аватара профиля */
+const popupEditProfileImage = document.querySelector(
+  ".popup_type_profile-image-edit"
+);
+const buttonCloseEditProfileImagePopup =
+  popupEditProfileImage.querySelector(".popup__close");
+const editProfileImageForm = document.forms["edit-profile-image"];
+const editProfileImageFormButton =
+  editProfileImageForm.querySelector(".button");
+export const linkProfileImageInput =
+  editProfileImageForm.elements["link-to-image"];
+linkProfileImageInput.value = myProfile.avatar;
+
+profileImage.addEventListener("click", (event) => {
+  clearValidation(
+    popupEditProfileImage,
+    editProfileImageFormButton,
+    validationConfig
+  );
+  openModal(popupEditProfileImage);
+  linkProfileImageInput.value = removeURL(profileImage.style.backgroundImage);
+});
+
+buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
+  closeModal(popupEditProfileImage);
+  clearValidation(
+    popupEditProfileImage,
+    editProfileImageFormButton,
+    validationConfig
+  );
+});
+
+editProfileImageForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const inputHasNoNewInfo =
+    removeURL(profileImage.style.backgroundImage) ==
+    linkProfileImageInput.value;
+
+  if (inputHasNoNewInfo) {
+    closeModal(popupEditProfileImage);
+  } else {
+    renderLoading(true, editProfileImageFormButton);
+    updateProfilePhoto(linkProfileImageInput.value)
+      .then((res) => {
+        profileImage.style.backgroundImage = makeURL(res.avatar);
+        notify(notifications.profileAvatarUpdated);
+      })
+      .catch((err) => {
+        console.log("Ошибка при обновлении аватарки:", err);
+        notify(notifications.profileAvatarUpdatedErr);
+      })
+      .finally(() => {
+        renderLoading(false, editProfileImageFormButton);
+        clearValidation(
+          popupEditProfileImage,
+          editProfileImageFormButton,
+          validationConfig
+        );
+        closeModal(popupEditProfileImage);
+      });
+  }
 });
 
 /* управляем поп-апом по созданию новой карточки */
@@ -158,68 +219,3 @@ export function imagePopupCallback(cardImage) {
 buttonCloseImagePopup.addEventListener("click", (event) => {
   closeModal(popupImage);
 });
-
-/* открываем поп-ап с изменением аватара профиля */
-const popupEditProfileImage = document.querySelector(
-  ".popup_type_profile-image-edit"
-);
-const buttonCloseEditProfileImagePopup =
-  popupEditProfileImage.querySelector(".popup__close");
-const editProfileImageForm = document.forms["edit-profile-image"];
-const editProfileImageFormButton =
-  editProfileImageForm.querySelector(".button");
-export const linkProfileImageInput =
-  editProfileImageForm.elements["link-to-image"];
-
-profileImage.addEventListener("click", (event) => {
-  clearValidation(
-    popupEditProfileImage,
-    editProfileImageFormButton,
-    validationConfig
-  );
-  openModal(popupEditProfileImage);
-  linkProfileImageInput.value = removeURL(profileImage.style.backgroundImage);
-});
-
-buttonCloseEditProfileImagePopup.addEventListener("click", (event) => {
-  closeModal(popupEditProfileImage);
-  clearValidation(
-    popupEditProfileImage,
-    editProfileImageFormButton,
-    validationConfig
-  );
-});
-
-editProfileImageForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const inputHasNoNewInfo =
-    removeURL(profileImage.style.backgroundImage) ==
-    linkProfileImageInput.value;
-
-  if (inputHasNoNewInfo) {
-    closeModal(popupEditProfileImage);
-  } else {
-    renderLoading(true, editProfileImageFormButton);
-    updateProfilePhoto(linkProfileImageInput.value)
-      .then((res) => {
-        profileImage.style.backgroundImage = makeURL(res.avatar);
-        notify(notifications.profileAvatarUpdated);
-      })
-      .catch((err) => {
-        console.log("Ошибка при обновлении аватарки:", err);
-        notify(notifications.profileAvatarUpdatedErr);
-      })
-      .finally(() => {
-        renderLoading(false, editProfileImageFormButton);
-        clearValidation(
-          popupEditProfileImage,
-          editProfileImageFormButton,
-          validationConfig
-        );
-        closeModal(popupEditProfileImage);
-      });
-  }
-});
-
-/* создаём первичный список карточек */
-renderInitialCards();
