@@ -1,8 +1,8 @@
-import { imagePopupCallback } from "../../index.js";
+import { imagePopupCallback, myProfile } from "../../index.js";
 import { GET, config } from "./baseApiMethods.js";
-import { likeFunction } from "../cardMethods/likeMethods.js";
-import { createCard } from "../cardMethods/card.js";
-import { deleteCard } from "../cardMethods/deleteCard.js";
+import { likeFunction } from "../card.js/likeMethods.js";
+import { createCard } from "../card.js/card.js";
+import { deleteCard } from "../card.js/deleteCard.js";
 
 /* рисуем список начальных карточек по данным с сервера */
 
@@ -39,7 +39,8 @@ export const renderInitialCards = () => {
           card,
           likeFunction,
           imagePopupCallback,
-          deleteCard
+          deleteCard, 
+          myProfile
         );
         placesList.append(cardElement);
         return initialCards;

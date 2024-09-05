@@ -1,6 +1,6 @@
-import { imagePopupCallback, myProfile } from "../..";
+import { imagePopupCallback } from "../..";
 import { DELETE, GET, PUT, POST, config } from "../api/baseApiMethods";
-import { renderLikes, likeFunction } from "../cardMethods/likeMethods";
+import { renderLikes, likeFunction } from "./likeMethods";
 import { deleteCard } from "./deleteCard";
 
 // @todo: Темплейт карточки
@@ -19,14 +19,14 @@ export function createCard(
   cardObject,
   likeFunction,
   imagePopupCallback,
-  deleteCard
+  deleteCard, 
+  myProfile
 ) {
   const cardElement = getCardTemplate();
 
   //кладём контент в шаблон
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
-  const cardLikes = cardElement.querySelector(".card__likes");
 
   cardImage.src = cardObject.link;
   cardImage.alt = cardObject.name;
@@ -53,7 +53,7 @@ export function createCard(
   return cardElement;
 }
 
-export const postNewCard = (title, link) => {
+export const postNewCard = (title, link, myProfile) => {
   const newCardURL = config.baseUrl + `/cards`;
 
   let newCard = {
@@ -71,7 +71,8 @@ export const postNewCard = (title, link) => {
         res,
         likeFunction,
         imagePopupCallback,
-        deleteCard
+        deleteCard, 
+        myProfile
       );
       cardElement.dataset.cardId = res._id;
       cardElement.querySelector(".card__like-button").dataset.parentCardId =

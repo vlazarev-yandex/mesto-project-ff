@@ -1,6 +1,6 @@
 import "./styles/index.css";
 import { openModal, closeModal } from "./components/modal/modal.js";
-import { postNewCard } from "./components/cardMethods/card.js";
+import { postNewCard } from "./components/card.js/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import { renderInitialCards } from "./components/api/renderInitialCards.js";
@@ -184,7 +184,7 @@ newCardForm.addEventListener("submit", (event) => {
   event.preventDefault();
   renderLoading(true, newCardFormButton);
 
-  postNewCard(placeNameInput.value, linkInput.value)
+  postNewCard(placeNameInput.value, linkInput.value, myProfile)
     .then((newCardWithId) => {
       placesList.prepend(newCardWithId);
       notify(notifications.newCardMessage);
