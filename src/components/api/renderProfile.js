@@ -10,7 +10,7 @@ const getProfile = () => {
         return userData;
       })
       .catch((error) => {
-        return Promise.reject(`Не удалось отрисовать профиль${error}`);
+        return Promise.reject(`Не удалось получить профиль${error}`);
       });
   };
   
@@ -20,7 +20,7 @@ const getProfile = () => {
     const profileDescription = profileInfo.querySelector(".profile__description");
     const profileImage = document.querySelector(".profile__image");
   
-    getProfile()
+    return getProfile()
       .then((userData) => {
         profileTitle.textContent = userData.name;
         profileDescription.textContent = userData.about;

@@ -5,7 +5,7 @@ import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import {
   renderInitialCards,
-} from "./components/api/renderPageFromServer.js";
+} from "./components/api/renderInitialCards.js";
 import { renderProfile } from "./components/api/renderProfile.js";
 import {
   updateProfileInfo,
@@ -15,11 +15,10 @@ import { notifications, notify } from "./components/notifications.js";
 import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 
 /* глобальные переменные */
-export const myProfile = await renderProfile();
-console.log(myProfile); 
+export const myProfile = await renderProfile(); 
+export const initialCards = renderInitialCards();  
 
 export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
-export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
 export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
 
 const content = document.querySelector(".content");
@@ -220,9 +219,6 @@ export const validationConfig = {
 };
 
 enableValidation(validationConfig);
-
-/* загружаем профиль на страницу */
-renderProfile();
 
 /* создаём первичный список карточек */
 renderInitialCards();

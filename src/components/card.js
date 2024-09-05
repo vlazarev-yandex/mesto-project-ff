@@ -1,7 +1,6 @@
-import { cohortName, imagePopupCallback, myProfile, newCardURL, initialCardsURL } from "..";
+import { cohortName, imagePopupCallback, myProfile } from "..";
 import { DELETE, GET, PUT, POST } from "./api/baseApiMethods";
 import { notify, notifications } from "./notifications";
-import { renderDeleteButton } from "./api/renderPageFromServer";
 import { renderLikes, likeFunction } from "./api/likeMethods";
 
 // @todo: Темплейт карточки
