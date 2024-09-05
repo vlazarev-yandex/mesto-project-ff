@@ -1,25 +1,22 @@
 import "./styles/index.css";
-
 import { openModal, closeModal } from "./components/modal.js";
 import { postNewCard, deleteCard } from "./components/card.js";
 import { makeURL, removeURL } from "./components/urlValidation.js";
 import { clearValidation, enableValidation } from "./components/validation.js";
 import {
-  renderProfile,
   renderInitialCards,
-} from "./components/renderPageFromServer.js";
+} from "./components/api/renderPageFromServer.js";
+import { renderProfile } from "./components/api/renderProfile.js";
 import {
   updateProfileInfo,
   updateProfilePhoto,
-} from "./components/updateServerData.js";
-import { POST, GET } from "./components/baseApiMethods.js";
+} from "./components/api/updateServerData.js";
 import { notifications, notify } from "./components/notifications.js";
 import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 
 /* глобальные переменные */
-export const cohortName = "wff-cohort-21";
-export const profileDataURL = `https://nomoreparties.co/v1/${cohortName}/users/me`;
-export const myProfile = await GET(profileDataURL);
+export const myProfile = await renderProfile();
+console.log(myProfile); 
 
 export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
 export const initialCardsURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
@@ -29,11 +26,6 @@ const content = document.querySelector(".content");
 export const placesList = content.querySelector(".places__list");
 
 /* управляем модальным окном изменения профиля */
-const profileInfo = content.querySelector(".profile__info");
-export const profileTitle = profileInfo.querySelector(".profile__title");
-export const profileDescription = profileInfo.querySelector(
-  ".profile__description"
-);
 
 const profileEditButton = content.querySelector(".profile__edit-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
@@ -153,7 +145,6 @@ buttonCloseImagePopup.addEventListener("click", (event) => {
 });
 
 /* открываем поп-ап с изменением аватара профиля */
-export const profileImage = document.querySelector(".profile__image");
 const popupEditProfileImage = document.querySelector(
   ".popup_type_profile-image-edit"
 );

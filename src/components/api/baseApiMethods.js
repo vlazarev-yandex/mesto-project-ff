@@ -1,6 +1,5 @@
-import { cohortName } from "..";
-
-const config = {
+export const cohortName = "wff-cohort-21";
+export const config = {
   baseUrl: `https://nomoreparties.co/v1/${cohortName}`,
   headers: {
     authorization: "936197d7-9c28-4a02-b461-a2e30a81b6a7",
@@ -10,17 +9,16 @@ const config = {
 
 const handleResponse = (res) => {
   if (res.ok) {
-    console.log("Успешно", res);
+    console.log(`Успешно`, res);
     return res.json();
   } else {
     return Promise.reject(res.status);
   }
-}
+};
 
 const handleError = (err) => {
-  console.log(`Ошибка в запросе GET: ${err}.`);
   return Promise.reject(`Что-то пошло не так: ${err}`);
-}
+};
 
 export const GET = (url) => {
   return fetch(url, {

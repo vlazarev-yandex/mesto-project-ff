@@ -1,5 +1,5 @@
 import { PATCH } from "./baseApiMethods";
-import { profileDataURL, profileAvatarURL } from "..";
+import { profileAvatarURL } from "../..";
 
 export const updateProfileInfo = (profileTitle, profileDescription) => {
   const profileUpdatedInfo = {

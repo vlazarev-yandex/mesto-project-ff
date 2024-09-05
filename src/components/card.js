@@ -1,62 +1,13 @@
 import { cohortName, imagePopupCallback, myProfile, newCardURL, initialCardsURL } from "..";
-import { DELETE, GET, PUT, POST } from "./baseApiMethods";
+import { DELETE, GET, PUT, POST } from "./api/baseApiMethods";
 import { notify, notifications } from "./notifications";
-import { renderDeleteButton, renderLikes } from "./renderPageFromServer";
+import { renderDeleteButton } from "./api/renderPageFromServer";
+import { renderLikes, likeFunction } from "./api/likeMethods";
+
 // @todo: Темплейт карточки
 function getCardTemplate() {
   const cardTemplate = document.querySelector("#card-template").content;
   return cardTemplate.querySelector(".places__item").cloneNode(true);
-}
-
-const putLike = (cardId) => {
-  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${cardId}`;
-
-  return PUT(myProfile, likeURL)
-    .then((res) => {
-      console.log("Отправил лайк на сервер успешно", res);
-      notify(notifications.likeMessage);
-      return res;
-    })
-    .catch((err) => {
-      console.log("Отправил лайк на сервер, но что-то не так: ", err);
-    });
-};
-
-const removeLike = (cardId) => {
-  const likeURL = `https://nomoreparties.co/v1/${cohortName}/cards/likes/${cardId}`;
-
-  return DELETE(likeURL)
-    .then((res) => {
-      console.log("Лайк удалён", res);
-      notify(notifications.dislikeMessage);
-      return res;
-    })
-    .catch((err) => {
-      console.log("Ошибка при снятии лайка", err, cardId);
-    });
-};
-
-export function likeFunction(event) {
-  const likeButton = event.target;
-  const cardId = likeButton.dataset.parentCardId;
-  const card = document.querySelector(`[data-card-id="${cardId}"]`);
-  const likeButtonHasMyLike = likeButton.classList.contains(
-    "card__like-button_is-active"
-  );
-
-  const likeMethod = likeButtonHasMyLike ? removeLike : putLike;
-
-  likeMethod(cardId)
-    .then((res) => {
-      likeButton.classList.toggle("card__like-button_is-active");
-      renderLikes(card, res);
-    })
-    .catch((err) => {
-      console.log(
-        `Ошибка при ${likeButtonHasMyLike ? "снятии" : "постановке"} лайка`,
-        err
-      );
-    });
 }
 
 export const deleteCard = (event) => {
