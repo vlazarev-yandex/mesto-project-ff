@@ -14,9 +14,9 @@ import {
 import { notifications, notify } from "./components/notifications.js";
 import { changeTextSmoothly, renderLoading } from "./components/transitions.js";
 
-/* глобальные переменные */
+/* отрисовываем профиль и карточки */
 export const myProfile = await renderProfile(); 
-export const initialCards = renderInitialCards();  
+export const initialCards = await renderInitialCards();  
 
 export const profileAvatarURL = `https://nomoreparties.co/v1/${cohortName}/users/me/avatar`;
 export const newCardURL = `https://nomoreparties.co/v1/${cohortName}/cards`;
