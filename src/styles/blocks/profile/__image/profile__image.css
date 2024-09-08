@@ -18,22 +18,29 @@
   height: 120px;
   border-radius: 50%;
   position: relative;
-  animation: flash 0.5s ease-out infinite alternate;
+  animation: flash 5s ease-out infinite alternate;
 }
 
 @keyframes flash {
   0% {
     border: transparent 5px solid;
     border-bottom: #fff;
+    border-left: #fff;
   }
-  50% {
+  33% {
     border: transparent 5px solid;
     border-left: #fff;
+    border-top: #fff;
+  }
+  66% {
+    border: transparent 5px solid;
+    border-right: #fff;
     border-top: #fff;
   }
   100% {
     border: transparent 5px solid;
     border-right: #fff;
+    border-bottom: #fff;
   }
 }
 

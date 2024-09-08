@@ -9,27 +9,27 @@ export const changeTextSmoothly = (object, text) => {
 };
 
 export const toggleVisibility = (object, target) => {
-  const hiddenClass = target + "-hidden"; 
-  const visuallyhiddenClass = target + "-visually-hidden"; 
-
+  const hiddenClass = target + "-hidden";
+  const visuallyhiddenClass = target + "-visually-hidden";
+  
   if (object.classList.contains(hiddenClass)) {
-    object.classList.remove(hiddenClass);
-    setTimeout(function () {
-      object.classList.remove(visuallyhiddenClass);
-    }, 20);
+  object.classList.remove(hiddenClass);
+  setTimeout(function () {
+    object.classList.remove(visuallyhiddenClass);
+  }, 20);
   } else {
-    object.classList.add(visuallyhiddenClass);
-    object.addEventListener(
-      "transitionend",
-      function (event) {
-        object.classList.add(hiddenClass);
-      },
-      {
-        capture: false,
-        once: true,
-        passive: false,
-      }
-    );
+  object.classList.add(visuallyhiddenClass);
+  object.addEventListener(
+    "transitionend",
+    function (event) {
+      object.classList.add(hiddenClass);
+    },
+    {
+      capture: false,
+      once: true,
+      passive: false,
+    }
+  );
   }
 };
 
